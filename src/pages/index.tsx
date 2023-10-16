@@ -1,12 +1,23 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { BellRing, Minus, Plus, Trash, Trash2 } from "lucide-react";
+import { BellRing, Minus, Plus, Trash, Trash2, XOctagon } from "lucide-react";
 import Head from "next/head";
 import Link from "next/link";
-import React from "react";
+import React, { useRef } from "react";
 import { MenuSearch } from "~/components/menusearch";
 import { MenuSearchEmbed } from "~/components/menusearchembed";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 import { api } from "~/utils/api";
 import { type RouterOutputs } from "~/utils/api";
@@ -19,11 +30,20 @@ type BillItemType = {
 };
 
 export default function Home() {
+  const [filteredData, setFilteredData] = React.useState<MenuItemType[]>([]);
+  const [search, setSearch] = React.useState("");
   const { isLoading, data, error } = api.menu.getAll.useQuery();
-
   const [bills, setBill] = React.useState<BillItemType[]>([]);
+  const searchRef = useRef(null); // Create a reference for the search input
+  const [selectedIndex, setSelectedIndex] = React.useState(-1);
+  React.useEffect(() => {
+    if (data) {
+      setFilteredData(data);
+    }
+  }, [data]);
 
-  const onSelect = (item: MenuItemType) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onSelect = (item: any) => {
     console.log(item.title, item.price);
     // if item already exists in the bill, increase the quantity
     if (bills.some((bill) => bill.item.id === item.id)) {
@@ -72,51 +92,90 @@ export default function Home() {
             </div>
           </div>
         </header>
-        <div className="flex w-4/5">
+        <div className="flex w-full lg:w-4/5">
           <div className="w-1/2 p-4">
             {/* Your left column content here */}
-            <div>
-              <MenuSearchEmbed data={data} onSelect={onSelect} />
+            <div className="flex flex-row">
+              <Input
+                ref={searchRef}
+                placeholder="Search..."
+                autoFocus
+                className="mb-2 shadow-sm"
+                value={search}
+                onChange={(e) => {
+                  const searchText = e.target.value;
+                  setSearch(searchText);
+                  if (searchText === "") {
+                    setFilteredData(data);
+                  } else {
+                    setFilteredData(
+                      data.filter(
+                        (item) =>
+                          item.title &&
+                          item.title
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase()),
+                      ),
+                    );
+                  }
+                }}
+               
+              />
+              {search !== "" && (
+                <Button
+                  variant={'secondary'}
+                  className="ml-3"
+                  onClick={() => {
+                    setSearch("");
+                    setFilteredData(data);
+                  }}
+                >
+                  <XOctagon size={14} color="red" />
+                </Button>
+              )}
+            </div>
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-4">
+              {filteredData.map((item, index) => (
+                <div
+                  onClick={() => onSelect(item)}
+                  key={index}
+                  className={`flex h-20 flex-col items-center justify-between rounded-md border px-2 py-4 font-mono text-sm shadow-sm  ${
+                    selectedIndex === index ? 'bg-yellow-500' : ''
+                  }`}
+                >
+                  <p className="text-xs font-semibold">{item.title}</p>
+                  <p className="text-xs text-gray-500">{`₹${item.price}`}</p>
+                </div>
+              ))}
             </div>
           </div>
           <div className="w-1/2 p-4">
             {/* Your right column content here */}
             <div className="overflow-x-auto">
-              <table className="w-full bg-white rounded my-6">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-600">
-                      Item
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-600">
-                      Price
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-600">
-                      Quantity
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-600">
-                      Total
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-600">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
-                  {bills.map((bill, idx) => (
-                    <tr key={idx}>
-                      <td className="whitespace-nowrap px-6 py-4">
-                        {bill.item.title}
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4">
-                        {bill.item.price}
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4">
+              <Table>
+                <TableCaption>A list of your recent invoices.</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Item</TableHead>
+                    <TableHead>Price</TableHead>
+                    <TableHead className="w-[100px]">Quantity</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {bills.map((billItem, idx) => (
+                    <TableRow key={idx}>
+                      <TableCell className="font-medium p-1">
+                        {billItem.item.title}
+                      </TableCell>
+                      <TableCell className="p-1">{billItem.item.price}</TableCell>
+                      <TableCell className="whitespace-nowrap p-1">
                         <Input
                           type="number"
                           max={900}
                           min={1}
-                          value={bill.quantity}
+                          value={billItem.quantity}
                           onChange={(e) =>
                             setBill((prev) =>
                               prev.map((bill, i) =>
@@ -130,78 +189,34 @@ export default function Home() {
                             )
                           }
                         />
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4">
-                        {/* quantity should be editabel */}
-                        {Number(bill.item.price) * bill.quantity}
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4">
+                      </TableCell>
+                      <TableCell className="text-right p-1">
+                        {Number(billItem.item.price) * billItem.quantity}
+                      </TableCell>
+                      <TableCell className="text-right p-1">
                         <Button
-                          variant="outline"
+                          variant={'outline'}
                           onClick={() =>
-                            // decrease the quantity if quantity is greater than 1 else delete the item
                             setBill((prev) =>
-                              prev.map((bill, i) =>
-                                i === idx
-                                  ? {
-                                      ...bill,
-                                      quantity:
-                                        bill.quantity > 1
-                                          ? bill.quantity - 1
-                                          : 1,
-                                    }
-                                  : bill,
-                              ),
+                              prev.filter((_, i) => i !== idx),
                             )
                           }
                         >
-                          <Minus size={16} />
+                          <Trash2 size={16} />
                         </Button>
-                        <Button
-                          variant="outline"
-                          className="mx-2"
-                          onClick={() =>
-                            // decrease the quantity
-                            setBill((prev) =>
-                              prev.map((bill, i) =>
-                                i === idx
-                                  ? {
-                                      ...bill,
-                                      quantity: bill.quantity + 1,
-                                    }
-                                  : bill,
-                              ),
-                            )
-                          }
-                        >
-                          <Plus size={16} />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          onClick={() =>
-                            setBill((prev) => prev.filter((_, i) => i !== idx))
-                          }
-                        >
-                          <Trash2 size={16} color="red" />
-                        </Button>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
                   {bills.length > 0 && (
-                    <tr>
-                      <td className="whitespace-nowrap px-6 py-4 font-bold">
-                        Total
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4"></td>
-                      <td className="whitespace-nowrap px-6 py-4"></td>
-                      <td className="whitespace-nowrap px-6 py-4 font-bold">
-                        {total}
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4"></td>
-                    </tr>
+                    <TableRow>
+                      <TableCell className="font-medium">Total</TableCell>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell className="text-right">{total}</TableCell>
+                    </TableRow>
                   )}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </div>
         </div>
