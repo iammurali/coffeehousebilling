@@ -38,6 +38,9 @@ export const Layout = ({
                 </div>
                 <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
                   {/* Additional common header components can be added here */}
+                  <span>
+                    Total sales: ₹{ localStorage.getItem('bills') ? (JSON.parse(localStorage.getItem('bills')!)).reduce((acc: any, obj: any) => {return acc+obj.total}, 0): '' }
+                  </span>
                   <ModeToggle />
                 </div>
               </div>

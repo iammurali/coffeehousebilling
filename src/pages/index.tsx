@@ -18,6 +18,7 @@ import {
 
 import { api } from "~/utils/api";
 import { type RouterOutputs } from "~/utils/api";
+import {toast} from 'react-hot-toast'
 
 type MenuItemType = RouterOutputs["menu"]["getAll"][number];
 
@@ -199,6 +200,27 @@ export default function Home() {
                       <TableCell></TableCell>
                       <TableCell></TableCell>
                       <TableCell className="text-right">{total}</TableCell>
+                      <TableCell className="text-right p-1"><Button className="w-18" onClick={()=> {
+                        const localBills = localStorage.getItem('bills')
+                        if(localBills) {
+                          let billArray = JSON.parse(localBills)
+                          billArray = billArray.concat({
+                            billId: Date.now().toString(),
+                            billItems: bills,
+                            total
+                          })
+                          localStorage.setItem('bills',JSON.stringify(billArray))
+                        } else {
+                          localStorage.setItem('bills', JSON.stringify([{
+                            billId: Date.now().toString(),
+                            billItems: bills,
+                            total
+                          }]))
+                        }
+                        
+                        setBill([])
+                        toast('Billing success')
+                        }}>Bill</Button></TableCell>
                     </TableRow>
                   )}
                 </TableBody>
