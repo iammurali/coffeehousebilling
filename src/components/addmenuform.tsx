@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { useForm, SubmitHandler } from "react-hook-form"
 import * as z from "zod"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form"
 import { Input } from "./ui/input"
@@ -34,7 +34,7 @@ export function AddMenuForm() {
 
 
   // 2. Define a submit handler.
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit : SubmitHandler<z.infer<typeof formSchema>> = (values: z.infer<typeof formSchema>): void => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values)
@@ -44,12 +44,16 @@ export function AddMenuForm() {
             toast("Item added successfully")
         }
     })
+    return result
   }
 
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={(event) => {
+      event.preventDefault();
+      void form.handleSubmit(onSubmit)(event);
+  }} className="space-y-8">
         <FormField
           control={form.control}
           name="productName"
