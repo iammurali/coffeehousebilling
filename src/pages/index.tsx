@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Plus, Trash2, XOctagon } from "lucide-react";
 import Link from "next/link";
 import React, { useRef } from "react";
@@ -203,7 +205,7 @@ export default function Home() {
                       <TableCell className="text-right p-1"><Button className="w-18" onClick={()=> {
                         const localBills = localStorage.getItem('bills')
                         if(localBills) {
-                          let billArray = JSON.parse(localBills)
+                          let billArray: any[] = JSON.parse(localBills)
                           billArray = billArray.concat({
                             billId: Date.now().toString(),
                             billItems: bills,
