@@ -30,8 +30,6 @@ export default function Home() {
   const [filteredData, setFilteredData] = React.useState<MenuItemType[]>([]);
   const [search, setSearch] = React.useState("");
   const { isLoading, data, error } = api.menu.getAll.useQuery();
-  const darter = api.menu.hello.useQuery({ text: "darter" });
-  console.log('check data::::::', darter.data);
   const [bills, setBill] = React.useState<BillItemType[]>([]);
   const searchRef = useRef(null); // Create a reference for the search input
   const [selectedIndex, setSelectedIndex] = React.useState(-1);
@@ -125,7 +123,7 @@ export default function Home() {
                 <div
                   onClick={() => onSelect(item)}
                   key={index}
-                  className={`flex h-20 flex-col items-center justify-between rounded-md border px-2 py-4 font-mono text-sm shadow-sm  ${
+                  className={`flex h-20 flex-col items-center justify-between bg-card rounded-md border-sm px-2 py-4 text-sm  ${
                     selectedIndex === index ? "bg-yellow-500" : ""
                   }`}
                 >
