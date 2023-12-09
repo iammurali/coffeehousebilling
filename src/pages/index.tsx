@@ -20,7 +20,7 @@ import {
 
 import { api } from "~/utils/api";
 import { type RouterOutputs } from "~/utils/api";
-import {toast} from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
 
 type MenuItemType = RouterOutputs["menu"]["getAll"][number];
 
@@ -66,7 +66,119 @@ export default function Home() {
     0,
   );
 
-  if (isLoading) return <div>Loading...</div>;
+  const printBill = () => {
+    // This function could fetch data from your backend or use local state
+    // to retrieve bill items and total. For this example, I'll use sample data.
+    const localBills = localStorage.getItem('bills')
+    if (localBills) {
+      let billArray: any[] = JSON.parse(localBills)
+      billArray = billArray.concat({
+        billId: Date.now().toString(),
+        billItems: bills,
+        total
+      })
+      localStorage.setItem('bills', JSON.stringify(billArray))
+    } else {
+      localStorage.setItem('bills', JSON.stringify([{
+        billId: Date.now().toString(),
+        billItems: bills,
+        total
+      }]))
+    }
+    const billItems = bills 
+    const totalAmount = total;
+
+    const printContent = `
+      <html>
+        <head>
+          <title>Bill</title>
+          <style>
+            /* Styles for the bill */
+            body {
+              font-family: Arial, sans-serif;
+              padding: 20px;
+            }
+            .bill {
+              border: 1px solid #ccc;
+              padding: 20px;
+              max-width: 300px;
+              margin: 0 auto;
+            }
+            .restaurant-name {
+              font-size: 24px;
+              font-weight: bold;
+              text-align: center;
+              margin-bottom: 5px;
+            }
+            .bill-items {
+              margin-bottom: 20px;
+            }
+            .bill-items table {
+              width: 100%;
+              border-collapse: collapse;
+            }
+            .bill-items th, .bill-items td {
+              border-bottom: 1px solid #ccc;
+              padding: 8px 0;
+              text-align: left;
+            }
+            .total {
+              font-weight: bold;
+              text-align: right;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="bill">
+            <div class="restaurant-name">Edaikazhinadu</div>
+            <div class="restaurant-name">Coffee house</div>
+            <div class="bill-items">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${billItems
+        .map(
+          (item) => `
+                      <tr>
+                        <td>${item.item.title}</td>
+                        <td>${item.quantity}</td>
+                        <td>${item.item.price}</td>
+                      </tr>
+                    `
+        )
+        .join('')}
+                </tbody>
+              </table>
+            </div>
+            <div class="total">
+              Total: ${totalAmount}
+            </div>
+          </div>
+          <script>
+            // Automatically trigger print dialog when the window loads
+            window.onload = function() {
+              window.print();
+            };
+          </script>
+        </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.open();
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+    }
+  };
+
+  if (isLoading) return <div className="flex flex-col items-center justify-center h-screen bg-black text-white">Loading...</div>;
 
   if (error) return <div>{error.message}</div>;
 
@@ -126,9 +238,8 @@ export default function Home() {
                 <div
                   onClick={() => onSelect(item)}
                   key={index}
-                  className={`flex h-20 flex-col items-center justify-between bg-card rounded-md border-sm px-2 py-4 text-sm  ${
-                    selectedIndex === index ? "bg-yellow-500" : ""
-                  }`}
+                  className={`flex h-20 flex-col items-center justify-between bg-card rounded-md border-sm px-2 py-4 text-sm  ${selectedIndex === index ? "bg-yellow-500" : ""
+                    }`}
                 >
                   <p className="text-xs font-semibold">{item.title}</p>
                   <p className="text-xs text-gray-500">{`₹${item.price}`}</p>
@@ -138,7 +249,7 @@ export default function Home() {
           </div>
           <div className="w-1/2 p-4">
             {/* Your right column content here */}
-            <div className="overflow-x-auto">
+            <div className="overflow-x-scroll">
               <Table>
                 <TableCaption>A list of your recent invoices.</TableCaption>
                 <TableHeader>
@@ -172,9 +283,9 @@ export default function Home() {
                               prev.map((bill, i) =>
                                 i === idx
                                   ? {
-                                      ...bill,
-                                      quantity: Number(e.target.value),
-                                    }
+                                    ...bill,
+                                    quantity: Number(e.target.value),
+                                  }
                                   : bill,
                               ),
                             )
@@ -202,27 +313,12 @@ export default function Home() {
                       <TableCell></TableCell>
                       <TableCell></TableCell>
                       <TableCell className="text-right">{total}</TableCell>
-                      <TableCell className="text-right p-1"><Button className="w-18" onClick={()=> {
-                        const localBills = localStorage.getItem('bills')
-                        if(localBills) {
-                          let billArray: any[] = JSON.parse(localBills)
-                          billArray = billArray.concat({
-                            billId: Date.now().toString(),
-                            billItems: bills,
-                            total
-                          })
-                          localStorage.setItem('bills',JSON.stringify(billArray))
-                        } else {
-                          localStorage.setItem('bills', JSON.stringify([{
-                            billId: Date.now().toString(),
-                            billItems: bills,
-                            total
-                          }]))
-                        }
-                        
+                      <TableCell className="text-right p-1"><Button className="w-18" onClick={() => {
+
+                        printBill()
                         setBill([])
                         toast('Billing success')
-                        }}>Bill</Button></TableCell>
+                      }}>Bill</Button></TableCell>
                     </TableRow>
                   )}
                 </TableBody>
