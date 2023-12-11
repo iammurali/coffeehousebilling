@@ -148,7 +148,7 @@ export default function Home() {
                       <tr>
                         <td>${item.item.title}</td>
                         <td>${item.quantity}</td>
-                        <td>${item.item.price}</td>
+                        <td>${item.item.price != null ? Number(item.item.price) * Number(item.quantity) : 0}</td>
                       </tr>
                     `
         )
