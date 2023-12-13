@@ -158,8 +158,8 @@ export default function Home() {
 </head>
 <body>
   <div class="bill">
-    <div class="restaurant-name">Edaikazhinadu Coffee House</div>
-    <div class="center" style="margin-bottom: 5px;font-size: 14px;"><span>Vilambur, ECR, Phone: 9715019994</span></div>
+  <div class="restaurant-name">Edaikazhinadu Coffee House</div>
+  <div class="center item-separator" style="margin-bottom: 5px;font-size: 14px;"><span>Vilambur, ECR, Phone: 9715019994</span></div>
 
     <div class="bill-items">
       <table>
@@ -175,9 +175,9 @@ export default function Home() {
         .map(
           (item) => `
                 <tr class="item-separator">
-                  <td style="font-weight: ;">${item.item.title}</td>
-                  <td style="text-align: center;">${item.quantity}</td>
-                  <td style="text-align: right;">${item.item.price != null ? Number(item.item.price) * Number(item.quantity) : 0}</td>
+                  <td style="font-weight: 600;">${item.item.title}</td>
+                  <td style="text-align: center;font-weight: 600;">${item.quantity}</td>
+                  <td style="text-align: right;font-weight: 600;">${item.item.price != null ? Number(item.item.price) * Number(item.quantity) : 0}</td>
                 </tr>
               `
         )
