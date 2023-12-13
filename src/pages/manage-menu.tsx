@@ -3,6 +3,7 @@
 import { Plus, Trash2, XOctagon, Edit, Trash } from "lucide-react";
 import Link from "next/link";
 import React, { useRef } from "react";
+import toast from "react-hot-toast";
 import { AddMenuForm } from "~/components/addmenuform";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -57,10 +58,10 @@ export default function Home() {
                     <TableCell className="font-medium">{item.title}</TableCell>
                     <TableCell>{item.category}</TableCell>
                     <TableCell >{`₹${item.price}`}</TableCell>
-                    <TableCell>  <button className="pr-2 text-yellow-300" onClick={() => { }}>
+                    <TableCell>  <button className="pr-2 text-yellow-300" onClick={() => { toast('Not function yet') }}>
                       <Edit />
                     </button>
-                      <button className="text-red-300" onClick={() => { }}>
+                      <button className="text-red-300" onClick={() => { toast('Not function yet') }}>
                         <Trash />
                       </button></TableCell>
                   </TableRow>
