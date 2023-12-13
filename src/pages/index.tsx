@@ -102,7 +102,7 @@ export default function Home() {
     @media print {
       body {
         margin: 0;
-        padding: 5mm; /* Add padding for better visual appearance */
+        padding: 2mm; /* Add padding for better visual appearance */
       }
     }
     .bill {
