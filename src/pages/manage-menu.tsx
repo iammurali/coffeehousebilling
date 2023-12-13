@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Plus, Trash2, XOctagon } from "lucide-react";
+import { Plus, Trash2, XOctagon, Edit, Trash } from "lucide-react";
 import Link from "next/link";
 import React, { useRef } from "react";
 import { AddMenuForm } from "~/components/addmenuform";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell, TableFooter } from "~/components/ui/table";
 import { Layout } from "~/layout/layout";
+import { api } from "~/utils/api";
 
 import { type RouterOutputs } from "~/utils/api";
 
@@ -18,18 +20,62 @@ type BillItemType = {
 };
 
 export default function Home() {
-  
+  const [filteredData, setFilteredData] = React.useState<MenuItemType[]>([]);
+  const { isLoading, data, error } = api.menu.getAll.useQuery();
+
+  React.useEffect(() => {
+    if (data) {
+      setFilteredData(data);
+    }
+  }, [data]);
+
+
+  if (isLoading) return <div className="flex flex-col items-center justify-center h-screen bg-black text-white">Loading...</div>;
+
+  if (error) return <div>{error.message}</div>;
 
   return (
     <>
       <Layout title="Home" description="Home page">
-        <div className="flex flex-row container mt-10">
+        <div className="flex flex-row container mt-10 h-[89vh]">
+          <div className="w-1/4">
             <AddMenuForm />
-            <div className="ml-10">
-                Menu list comes here
-            </div>
+          </div>
+          <div className="ml-10 overflow-y-scroll w-3/4">
+            <Table >
+              <TableHeader>
+                <TableRow className="border-neutral-500">
+                  <TableHead>Name</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead >Price</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredData.map((item) => (
+                  <TableRow className="border-neutral-500" key={item.id}>
+                    <TableCell className="font-medium">{item.title}</TableCell>
+                    <TableCell>{item.category}</TableCell>
+                    <TableCell >{`₹${item.price}`}</TableCell>
+                    <TableCell>  <button className="pr-2 text-yellow-300" onClick={() => { }}>
+                      <Edit />
+                    </button>
+                      <button className="text-red-300" onClick={() => { }}>
+                        <Trash />
+                      </button></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan={3}>Total</TableCell>
+                  <TableCell className="text-right">$2,500.00</TableCell>
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </div>
         </div>
-        
+
       </Layout>
     </>
   );

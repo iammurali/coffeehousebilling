@@ -85,7 +85,7 @@ export default function Home() {
         total
       }]))
     }
-    const billItems = bills 
+    const billItems = bills
     const totalAmount = total;
 
     const printContent = `
@@ -172,16 +172,16 @@ export default function Home() {
         </thead>
         <tbody>
           ${billItems
-            .map(
-              (item) => `
+        .map(
+          (item) => `
                 <tr class="item-separator">
                   <td style="font-weight: ;">${item.item.title}</td>
                   <td style="text-align: center;">${item.quantity}</td>
                   <td style="text-align: right;">${item.item.price != null ? Number(item.item.price) * Number(item.quantity) : 0}</td>
                 </tr>
               `
-            )
-            .join('')}
+        )
+        .join('')}
         </tbody>
       </table>
     </div>
@@ -215,6 +215,11 @@ export default function Home() {
     }
   };
 
+  const handleButtonClick = (event: String) => {
+    // alert('These buttons are not functional as of now')
+    toast('Not functional')
+   }
+
   if (isLoading) return <div className="flex flex-col items-center justify-center h-screen bg-black text-white">Loading...</div>;
 
   if (error) return <div>{error.message}</div>;
@@ -222,15 +227,15 @@ export default function Home() {
   return (
     <>
       <Layout title="Home" description="Home page">
-        <div className="flex container mx-auto mt-10">
-          <div className="w-1/2 p-4">
+        <div className="flex container mx-auto h-[88vh]">
+          <div className="w-1/2 p-2">
             {/* Your left column content here */}
-            <div className="flex flex-row">
+            <div className="h-[10%] flex flex-row items-center">
               <Input
                 ref={searchRef}
                 placeholder="Search..."
                 autoFocus
-                className="mb-2 shadow-sm"
+                className="mb-1 shadow-sm"
                 value={search}
                 onChange={(e) => {
                   const searchText = e.target.value;
@@ -270,7 +275,7 @@ export default function Home() {
                 </Link>
               }
             </div>
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-4">
+            <div className="h-[90%] grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-4 overflow-y-scroll">
               {filteredData.map((item, index) => (
                 <div
                   onClick={() => onSelect(item)}
@@ -284,11 +289,10 @@ export default function Home() {
               ))}
             </div>
           </div>
-          <div className="w-1/2 p-4">
+          <div className="w-1/2 p-2">
             {/* Your right column content here */}
-            <div className="overflow-x-scroll">
+            <div className="overflow-x-scroll h-[86%]">
               <Table>
-                <TableCaption>A list of your recent invoices.</TableCaption>
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-left">Item</TableHead>
@@ -344,22 +348,48 @@ export default function Home() {
                       </TableCell>
                     </TableRow>
                   ))}
-                  {bills.length > 0 && (
-                    <TableRow>
-                      <TableCell className="font-medium">Total</TableCell>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell className="text-right">{total}</TableCell>
-                      <TableCell className="text-right p-1"><Button className="w-18" onClick={() => {
 
-                        printBill()
-                        setBill([])
-                        toast('Billing success')
-                      }}>Bill</Button></TableCell>
-                    </TableRow>
-                  )}
                 </TableBody>
               </Table>
+            </div>
+            <div className="flex flex-col justify-end h-[14%]">
+              <div>
+                <div className="text-right"> {bills.length > 0 ? <b>TOTAL: {total}</b>: <b>TOTAL: 0</b>}</div>
+                <div className="grid grid-cols-4 gap-4 lg:pt-4">
+
+                  <button
+                    onClick={() => {setBill([])
+                      toast('Cleared bill')}}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-md"
+                  >
+                    Clear Bill
+                  </button>
+                  <button
+                    onClick={() => handleButtonClick('Discount')}
+                    className="bg-purple-500 hover:bg-purple-600 text-white py-2 rounded-md"
+                  >
+                    Discount
+                  </button>
+                  <button
+                    onClick={() => handleButtonClick('Hold')}
+                    className="bg-gray-500 hover:bg-gray-600 text-white py-2 rounded-md"
+                  >
+                    Hold
+                  </button>
+                  <button
+                    onClick={() => {
+
+                      printBill()
+                      setBill([])
+                      toast('Billing success')
+                    }}
+                    className="bg-green-500 hover:bg-green-600 text-white py-2 rounded-md"
+                  >
+                    Print Bill
+                  </button>
+                  {/* Add more buttons for various POS actions */}
+                </div>
+              </div>
             </div>
           </div>
         </div>
