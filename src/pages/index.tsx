@@ -96,19 +96,18 @@ export default function Home() {
             /* Styles for the bill */
             body {
               font-family: Arial, sans-serif;
-              padding: 20px;
+              padding: 5px;
             }
             .bill {
               border: 1px solid #ccc;
-              padding: 20px;
+              padding: 5px;
               max-width: 300px;
               margin: 0 auto;
             }
             .restaurant-name {
-              font-size: 24px;
+              font-size: 16px;
               font-weight: bold;
-              text-align: center;
-              margin-bottom: 5px;
+              text-align: center; 
             }
             .bill-items {
               margin-bottom: 20px;
@@ -126,18 +125,23 @@ export default function Home() {
               font-weight: bold;
               text-align: right;
             }
+            .center {
+              margin-top: 5px;
+              text-align: center;
+            }
           </style>
         </head>
         <body>
           <div class="bill">
-            <div class="restaurant-name">Edaikazhinadu</div>
-            <div class="restaurant-name">Coffee house</div>
+            <div class="restaurant-name">Edaikazhinadu Coffee House</div>
+
+            <div class="center"><span>Vilambur, ECR, Phone: 9715019994</span></div>
             <div class="bill-items">
               <table>
                 <thead>
                   <tr>
                     <th>Item</th>
-                    <th>Quantity</th>
+                    <th>Qty</th>
                     <th>Price</th>
                   </tr>
                 </thead>
