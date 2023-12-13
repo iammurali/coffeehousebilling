@@ -97,7 +97,7 @@ export default function Home() {
     body {
       font-family: monospace;
       padding: 0;
-      width: 72mm; /* Set width to 72mm */
+      width: 85mm; /* Set width to 72mm */
     }
     @media print {
       body {
