@@ -159,7 +159,7 @@ export default function Home() {
 <body>
   <div class="bill">
     <div class="restaurant-name">Edaikazhinadu Coffee House</div>
-    <div class="center" style="margin-bottom: 5px"><span>Vilambur, ECR, Phone: 9715019994</span></div>
+    <div class="center" style="margin-bottom: 5px;font-size: 14px;"><span>Vilambur, ECR, Phone: 9715019994</span></div>
 
     <div class="bill-items">
       <table>
