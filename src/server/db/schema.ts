@@ -43,13 +43,13 @@ export const menuItem = mysqlTable(
     description: varchar("description", { length: 256 }),
     category: varchar("category", { length: 256 }),
     price: decimal("price", { precision: 10, scale: 2 }),
-    isActive: mysqlEnum("isActive", ["true", "false"]),
+    isActive: mysqlEnum("isActive", ["true", "false"]).default("true"),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
     updatedAt: timestamp("updatedAt").onUpdateNow(),
   },
-  (example) => ({
+  (example: { title: any; }) => ({
     titleIndex: uniqueIndex("title_idx").on(example.title),
   })
 );
