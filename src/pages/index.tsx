@@ -89,89 +89,111 @@ export default function Home() {
     const totalAmount = total;
 
     const printContent = `
-      <html>
-        <head>
-          <title>Bill</title>
-          <style>
-            /* Styles for the bill */
-            body {
-              font-family: Arial, sans-serif;
-              padding: 5px;
-            }
-            .bill {
-              border: 1px solid #ccc;
-              padding: 5px;
-              max-width: 300px;
-              margin: 0 auto;
-            }
-            .restaurant-name {
-              font-size: 16px;
-              font-weight: bold;
-              text-align: center; 
-            }
-            .bill-items {
-              margin-bottom: 20px;
-            }
-            .bill-items table {
-              width: 100%;
-              border-collapse: collapse;
-            }
-            .bill-items th, .bill-items td {
-              border-bottom: 1px solid #ccc;
-              padding: 8px 0;
-              text-align: left;
-            }
-            .total {
-              font-weight: bold;
-              text-align: right;
-            }
-            .center {
-              margin-top: 5px;
-              text-align: center;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="bill">
-            <div class="restaurant-name">Edaikazhinadu Coffee House</div>
+    <html>
+<head>
+  <title>Bill</title>
+  <style>
+    /* Styles for the bill */
+    body {
+      font-family: monospace;
+      padding: 5px;
+    }
+    .bill {
+      border: 1px solid #ccc;
+      padding: 10px;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+    .restaurant-name {
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .center {
+      margin-top: 5px;
+      text-align: center;
+    }
+    .bill-items {
+      margin-bottom: 20px;
+    }
+    .bill-items table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .bill-items th, .bill-items td {
+      padding: 5px 0;
+      text-align: left;
+    }
+    .item-separator {
+      border-bottom: 1px dashed #000;
+    }
+    .total {
+      font-weight: bold;
+      text-align: right;
+      padding-top: 10px;
+    }
+    .personal-message {
+      font-style: italic;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .footer {
+      font-size: 12px;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="bill">
+    <div class="restaurant-name">Edaikazhinadu Coffee House</div>
+    <div class="center"><span>Vilambur, ECR, Phone: 9715019994</span></div>
 
-            <div class="center"><span>Vilambur, ECR, Phone: 9715019994</span></div>
-            <div class="bill-items">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Item</th>
-                    <th>Qty</th>
-                    <th>Price</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${billItems
-        .map(
-          (item) => `
-                      <tr>
-                        <td>${item.item.title}</td>
-                        <td>${item.quantity}</td>
-                        <td>${item.item.price != null ? Number(item.item.price) * Number(item.quantity) : 0}</td>
-                      </tr>
-                    `
-        )
-        .join('')}
-                </tbody>
-              </table>
-            </div>
-            <div class="total">
-              Total: ${totalAmount}
-            </div>
-          </div>
-          <script>
-            // Automatically trigger print dialog when the window loads
-            window.onload = function() {
-              window.print();
-            };
-          </script>
-        </body>
-      </html>
+    <div class="bill-items">
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th style="text-align: center;">Qty</th>
+            <th style="text-align: right;">Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${billItems
+            .map(
+              (item) => `
+                <tr class="item-separator">
+                  <td>${item.item.title}</td>
+                  <td style="text-align: center;">${item.quantity}</td>
+                  <td style="text-align: right;">${item.item.price != null ? Number(item.item.price) * Number(item.quantity) : 0}</td>
+                </tr>
+              `
+            )
+            .join('')}
+        </tbody>
+      </table>
+    </div>
+    <div class="total">
+      Total: ${totalAmount}
+    </div>
+    
+    <div class="personal-message">
+      Thank you for dining with us! We hope to see you again soon.
+    </div>
+    
+    <div class="footer">
+      - Edaikazhinadu Coffee House -
+    </div>
+  </div>
+  <script>
+    // Automatically trigger print dialog when the window loads
+    window.onload = function() {
+      window.print();
+    };
+  </script>
+</body>
+</html>
     `;
 
     const printWindow = window.open('', '_blank');
