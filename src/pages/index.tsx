@@ -97,6 +97,8 @@ export default function Home() {
     body {
       font-family: monospace;
       padding: 0;
+      -webkit-font-smoothing: none; /* Disable font smoothing */
+      font-smoothing: none;
       width: 72mm; /* Set width to 72mm */
     }
     @media print {
@@ -171,7 +173,7 @@ export default function Home() {
             .map(
               (item) => `
                 <tr class="item-separator">
-                  <td>${item.item.title}</td>
+                  <td style="font-weight: ;">${item.item.title}</td>
                   <td style="text-align: center;">${item.quantity}</td>
                   <td style="text-align: right;">${item.item.price != null ? Number(item.item.price) * Number(item.quantity) : 0}</td>
                 </tr>
