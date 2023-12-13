@@ -215,7 +215,7 @@ export default function Home() {
     }
   };
 
-  const handleButtonClick = (event: String) => {
+  const handleButtonClick = (event: string) => {
     // alert('These buttons are not functional as of now')
     toast('Not functional')
    }
