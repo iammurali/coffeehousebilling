@@ -96,7 +96,14 @@ export default function Home() {
     /* Styles for the bill */
     body {
       font-family: monospace;
-      padding: 5px;
+      padding: 0;
+      width: 72mm; /* Set width to 72mm */
+    }
+    @media print {
+      body {
+        margin: 0;
+        padding: 5mm; /* Add padding for better visual appearance */
+      }
     }
     .bill {
       border: 1px solid #ccc;
