@@ -97,6 +97,8 @@ export default function Home() {
     body {
       font-family: monospace;
       padding: 0;
+      font-size: 15px;
+      font-weight: 600;
       -webkit-font-smoothing: none; /* Disable font smoothing */
       font-smoothing: none;
       width: 72mm; /* Set width to 72mm */
@@ -192,7 +194,7 @@ export default function Home() {
     </div>
     
     <div class="footer">
-      - Edaikazhinadu Coffee House -
+    - @edaikazhinadu_coffee_house -
     </div>
   </div>
   <script>
