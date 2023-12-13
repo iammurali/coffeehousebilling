@@ -108,7 +108,7 @@ export default function Home() {
     .bill {
       border: 1px solid #ccc;
       padding: 10px;
-      max-width: 72mm;
+      max-width: 85mm;
       margin: 0 auto;
     }
     .restaurant-name {
