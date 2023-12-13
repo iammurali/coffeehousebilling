@@ -97,18 +97,18 @@ export default function Home() {
     body {
       font-family: monospace;
       padding: 0;
-      width: 85mm; /* Set width to 72mm */
+      width: 72mm; /* Set width to 72mm */
     }
     @media print {
       body {
         margin: 0;
-        padding: 2mm; /* Add padding for better visual appearance */
+        padding: 1mm; /* Add padding for better visual appearance */
       }
     }
     .bill {
       border: 1px solid #ccc;
-      padding: 10px;
-      max-width: 85mm;
+      padding: 2mm;
+      max-width: 72mm;
       margin: 0 auto;
     }
     .restaurant-name {
@@ -148,14 +148,14 @@ export default function Home() {
     .footer {
       font-size: 12px;
       text-align: center;
-      margin-top: 10px;
+      margin-top: 5px;
     }
   </style>
 </head>
 <body>
   <div class="bill">
     <div class="restaurant-name">Edaikazhinadu Coffee House</div>
-    <div class="center"><span>Vilambur, ECR, Phone: 9715019994</span></div>
+    <div class="center" style="margin-bottom: 5px"><span>Vilambur, ECR, Phone: 9715019994</span></div>
 
     <div class="bill-items">
       <table>
