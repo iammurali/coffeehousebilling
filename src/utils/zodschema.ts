@@ -9,3 +9,7 @@ export const formSchema = z.object({
     }),
     description:  z.string().optional()
 })
+
+export const deleteMenuItem = z.object({
+  itemId: z.number()
+})

@@ -29,9 +29,6 @@ export function AddMenuForm() {
         })
     }
     const menuMutation = api.menu.addMenu.useMutation();
-//   const { isLoading, data, error } = api.menu.getAll.useQuery();
-  // 1. Define your form.
-
 
   // 2. Define a submit handler.
   const onSubmit : SubmitHandler<z.infer<typeof formSchema>> = (values: z.infer<typeof formSchema>): void => {

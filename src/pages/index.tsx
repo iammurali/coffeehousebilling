@@ -274,7 +274,7 @@ export default function Home() {
                   </Button>
                 </Link>
               }
-            </div>
+            </div> 
             <div className="h-[90%] grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-4 overflow-y-scroll">
               {filteredData.map((item, index) => (
                 <div

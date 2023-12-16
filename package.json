@@ -8,7 +8,10 @@
     "push": "drizzle-kit push:sqlite",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "db:studio": "dotenv drizzle-kit studio",
+    "db:generate": "dotenv drizzle-kit generate:mysql",
+    "db:generate:custom": "dotenv drizzle-kit generate:mysql --custom=custom"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
@@ -22,6 +25,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@t3-oss/env-nextjs": "^0.7.0",
     "@tanstack/react-query": "^4.32.6",
+    "@tanstack/react-table": "^8.10.7",
     "@trpc/client": "^10.37.1",
     "@trpc/next": "^10.37.1",
     "@trpc/react-query": "^10.37.1",
@@ -37,6 +41,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.48.2",
     "react-hot-toast": "^2.4.1",
+    "react-table": "^7.8.0",
     "superjson": "^1.13.1",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
@@ -47,6 +52,7 @@
     "@types/node": "^18.16.0",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
+    "@types/react-table": "^7.7.18",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
     "autoprefixer": "^10.4.14",

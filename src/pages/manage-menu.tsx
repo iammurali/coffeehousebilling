@@ -5,6 +5,8 @@ import Link from "next/link";
 import React, { useRef } from "react";
 import toast from "react-hot-toast";
 import { AddMenuForm } from "~/components/addmenuform";
+import { columns, payments } from "~/components/columns";
+import { EditableTable } from "~/components/editabletable";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell, TableFooter } from "~/components/ui/table";
@@ -22,13 +24,26 @@ type BillItemType = {
 
 export default function Home() {
   const [filteredData, setFilteredData] = React.useState<MenuItemType[]>([]);
-  const { isLoading, data, error } = api.menu.getAll.useQuery();
+  const { isLoading, data, error, refetch } = api.menu.getAll.useQuery();
+  const menuMutation = api.menu.deleteMenuItem.useMutation();
 
   React.useEffect(() => {
     if (data) {
       setFilteredData(data);
     }
   }, [data]);
+
+  const deleteMenuItem = (itemId: number) => {
+
+    const deletedItem = menuMutation.mutate({ itemId }, {
+      onSuccess: () => {
+        toast('Menu item deleted successfully')
+        refetch()
+      }
+    })
+
+    console.log('deleteMenuItem', deletedItem)
+  }
 
 
   if (isLoading) return <div className="flex flex-col items-center justify-center h-screen bg-black text-white">Loading...</div>;
@@ -61,19 +76,15 @@ export default function Home() {
                     <TableCell>  <button className="pr-2 text-yellow-300" onClick={() => { toast('Not function yet') }}>
                       <Edit />
                     </button>
-                      <button className="text-red-300" onClick={() => { toast('Not function yet') }}>
+                      <button className="text-red-300" onClick={() => deleteMenuItem(item.id)}>
                         <Trash />
                       </button></TableCell>
                   </TableRow>
                 ))}
               </TableBody>
-              <TableFooter>
-                <TableRow>
-                  <TableCell colSpan={3}>Total</TableCell>
-                  <TableCell className="text-right">$2,500.00</TableCell>
-                </TableRow>
-              </TableFooter>
             </Table>
+
+            {/* <EditableTable columns={columns} data={payments}  /> */}
           </div>
         </div>
 
