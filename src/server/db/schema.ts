@@ -49,7 +49,7 @@ export const menuItem = mysqlTable(
       .notNull(),
     updatedAt: timestamp("updatedAt").onUpdateNow(),
   },
-  (example: { title: any; }) => ({
+  (example) => ({
     titleIndex: uniqueIndex("title_idx").on(example.title),
   })
 );

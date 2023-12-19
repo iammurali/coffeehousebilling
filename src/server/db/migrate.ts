@@ -25,4 +25,4 @@ async function migrateFiles() {
 
 }
 
-migrateFiles()
+await migrateFiles()
