@@ -17,7 +17,7 @@ export function AddMenuForm() {
       defaultValues: {
         productName: "",
         price: '',
-        description: ''
+        description: '',
       },
     })
 
@@ -35,7 +35,7 @@ export function AddMenuForm() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values)
-    const result =  menuMutation.mutate(values,{
+    const result =  menuMutation.mutate({...values },{
         onSuccess: () => {
             resetForm()
             toast("Item added successfully")

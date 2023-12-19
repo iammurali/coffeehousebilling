@@ -7,7 +7,8 @@ export const formSchema = z.object({
     price: z.string().min(1, {
       message: "price must be at least 2 characters.",
     }),
-    description:  z.string().optional()
+    description:  z.string().optional(),
+    isActive: z.boolean().default(true)
 })
 
 export const deleteMenuItem = z.object({

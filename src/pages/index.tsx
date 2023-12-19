@@ -158,6 +158,7 @@ export default function Home() {
 </head>
 <body>
   <div class="bill">
+  <img src="/coffeehouselogo.jpg" alt="Restaurant Logo" style="display: block; margin: 0 auto; max-width: 80%;" />
   <div class="restaurant-name">Edaikazhinadu Coffee House</div>
   <div class="center item-separator" style="margin-bottom: 5px;font-size: 14px;"><span>Vilambur, ECR, Phone: 9715019994</span></div>
 
@@ -167,7 +168,8 @@ export default function Home() {
           <tr>
             <th>Item</th>
             <th style="text-align: center;">Qty</th>
-            <th style="text-align: right;">Price</th>
+            <th style="text-align: right;">Rs</th>
+            <th style="text-align: right;">Amount</th>
           </tr>
         </thead>
         <tbody>
@@ -177,6 +179,7 @@ export default function Home() {
                 <tr class="item-separator">
                   <td style="font-weight: 600;">${item.item.title}</td>
                   <td style="text-align: center;font-weight: 600;">${item.quantity}</td>
+                  <td style="text-align: right;font-weight: 600;">${item.item.price != null ? Number(item.item.price) : 0}</td>
                   <td style="text-align: right;font-weight: 600;">${item.item.price != null ? Number(item.item.price) * Number(item.quantity) : 0}</td>
                 </tr>
               `
@@ -190,7 +193,7 @@ export default function Home() {
     </div>
     
     <div class="personal-message">
-      Thank you for dining with us! We hope to see you again soon.
+      பகுத்துண்டு பல்லுயிர் ஓம்புதல்
     </div>
     
     <div class="footer">
@@ -200,6 +203,21 @@ export default function Home() {
   <script>
     // Automatically trigger print dialog when the window loads
     window.onload = function() {
+      function getCurrentDateTime() {
+        const now = new Date();
+        const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+        return now.toLocaleDateString('en-US', options);
+      }
+  
+      // Insert the current date and time into the bill
+      const currentDate = getCurrentDateTime();
+      const dateTimeElement = document.createElement('div');
+      dateTimeElement.innerText = currentDate;
+      dateTimeElement.classList.add('center');
+      dateTimeElement.classList.add('item-separator');
+      document.querySelector('.bill').insertBefore(dateTimeElement, document.querySelector('.restaurant-name'));
+  
+      // Trigger print dialog after modifying the bill content
       window.print();
     };
   </script>
