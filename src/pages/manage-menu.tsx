@@ -36,9 +36,11 @@ export default function Home() {
   const deleteMenuItem = (itemId: number) => {
 
     const deletedItem = menuMutation.mutate({ itemId }, {
-      onSuccess: async () => {
+      onSuccess: () => {
         toast('Menu item deleted successfully')
-        await refetch()
+        refetch().then(()=>{
+          console.log('fetched')
+        }).catch((err)=> console.log(err))
       }
     })
 
