@@ -177,7 +177,7 @@ export default function Home() {
         .map(
           (item) => `
                 <tr class="item-separator">
-                  <td style="font-weight: 600;">${item.item.title}</td>
+                  <td style="font-weight: 600;">${item.item.title?.toUpperCase()}</td>
                   <td style="text-align: center;font-weight: 600;">${item.quantity}</td>
                   <td style="text-align: right;font-weight: 600;">${item.item.price != null ? Number(item.item.price) : 0}</td>
                   <td style="text-align: right;font-weight: 600;">${item.item.price != null ? Number(item.item.price) * Number(item.quantity) : 0}</td>
@@ -348,10 +348,29 @@ export default function Home() {
                   {bills.map((billItem, idx) => (
                     <TableRow key={idx}>
                       <TableCell className="p-1 font-medium">
-                        {billItem.item.title}
+                        {billItem.item.title?.toUpperCase()}
                       </TableCell>
                       <TableCell className="p-1">
-                        {billItem.item.price}
+                      <Input
+                          type="string"
+                          value={billItem.item.price ? billItem.item.price : '0'}
+                          onChange={(e) =>
+                            setBill((prev) =>
+                              prev.map((bill, i) =>
+                                i === idx
+                                  ? {
+                                    ...bill,
+                                    item: {
+                                      ...bill.item,
+                                      price: e.target.value
+                                    }
+                                  }
+                                  : bill,
+                              ),
+                            )
+                          }
+                        />
+                        {/* {billItem.item.price} */}
                       </TableCell>
                       <TableCell className="whitespace-nowrap p-1">
                         <Input
