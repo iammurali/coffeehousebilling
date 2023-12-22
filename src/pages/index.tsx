@@ -238,6 +238,22 @@ export default function Home() {
     toast('Not functional')
    }
 
+   const compareStrings = (searchText: string, itemText: string): boolean => {
+    if (searchText.length > itemText.length) return false;
+
+    let i = 0;
+    let j = 0;
+
+    while (i < searchText.length && j < itemText.length) {
+      if (searchText[i] === itemText[j]) {
+        i++;
+      }
+      j++;
+    }
+
+    return i === searchText.length;
+  };
+
   if (isLoading) return <div className="flex flex-col items-center justify-center h-screen bg-black text-white">Loading...</div>;
 
   if (error) return <div>{error.message}</div>;
@@ -258,18 +274,24 @@ export default function Home() {
                 onChange={(e) => {
                   const searchText = e.target.value;
                   setSearch(searchText);
-                  if (searchText === "") {
+                  if (searchText.trim() === "") {
                     setFilteredData(data);
                   } else {
-                    setFilteredData(
-                      data.filter(
-                        (item) =>
-                          item.title &&
-                          item.title
-                            .toLowerCase()
-                            .includes(searchText.toLowerCase()),
-                      ),
-                    );
+                   const sanitizedSearch = searchText.trim().toLowerCase().replace(/\s/g, ''); // Remove spaces from search
+                  const filtered = data.filter(item =>
+                    item.title &&
+                    compareStrings(sanitizedSearch, item.title.toLowerCase().replace(/\s/g, ''))
+                  );
+                  setFilteredData(filtered);
+                    // setFilteredData(
+                    //   data.filter(
+                    //     (item) =>
+                    //       item.title &&
+                    //       item.title
+                    //         .toLowerCase()
+                    //         .includes(searchText.toLowerCase()),
+                    //   ),
+                    // );
                   }
                 }}
               />

@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { menuItem } from "~/server/db/schema";
-import { formSchema, deleteMenuItem } from "~/utils/zodschema";
+import { formSchema, deleteMenuItem, editMenuItemSchema } from "~/utils/zodschema";
 
 export const menuRouter = createTRPCRouter({
   hello: publicProcedure
@@ -31,6 +31,13 @@ export const menuRouter = createTRPCRouter({
     const deletedMenu = await ctx.db.update(menuItem).set({isActive: "false"}).where(eq(menuItem.id, itemId));
     console.log(deletedMenu)
     return deletedMenu;
+  }),
+  editMenuItem: publicProcedure.input(editMenuItemSchema).mutation(async ({input, ctx})=> {
+    const { id, title, description, isActive, price } = input
+    const editedMenu = await ctx.db.update(menuItem).set({id, title, description, isActive, price}).where(eq(menuItem.id, input.id));
+    console.log(editedMenu)
+    return editedMenu;
   })
+
 
 });

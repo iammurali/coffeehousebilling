@@ -12,15 +12,13 @@ import { Input } from "~/components/ui/input";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell, TableFooter } from "~/components/ui/table";
 import { Layout } from "~/layout/layout";
 import { api } from "~/utils/api";
+import { editMenuItemSchema } from "~/utils/zodschema"
 
 import { type RouterOutputs } from "~/utils/api";
+import { z } from "zod";
+import { EditDialog } from "~/components/editdialog";
 
 type MenuItemType = RouterOutputs["menu"]["getAll"][number];
-
-type BillItemType = {
-  item: MenuItemType;
-  quantity: number;
-};
 
 export default function Home() {
   const [filteredData, setFilteredData] = React.useState<MenuItemType[]>([]);
@@ -34,7 +32,6 @@ export default function Home() {
   }, [data]);
 
   const deleteMenuItem = (itemId: number) => {
-
     const deletedItem = menuMutation.mutate({ itemId }, {
       onSuccess: () => {
         toast('Menu item deleted successfully')
@@ -43,10 +40,8 @@ export default function Home() {
         }).catch((err)=> console.log(err))
       }
     })
-
     console.log('deleteMenuItem', deletedItem)
   }
-
 
   if (isLoading) return <div className="flex flex-col items-center justify-center h-screen bg-black text-white">Loading...</div>;
 
@@ -75,12 +70,14 @@ export default function Home() {
                     <TableCell className="font-medium">{item.title}</TableCell>
                     <TableCell>{item.category}</TableCell>
                     <TableCell >{`₹${item.price}`}</TableCell>
-                    <TableCell>  <button className="pr-2 text-yellow-300" onClick={() => { toast('Not function yet') }}>
-                      <Edit />
-                    </button>
+                    <TableCell>  
+                    <EditDialog refetch={async () => { await refetch();
+                    toast('please close the popup')
+                    }} item={item} />
                       <button className="text-red-300" onClick={() => deleteMenuItem(item.id)}>
                         <Trash />
-                      </button></TableCell>
+                      </button>
+                      </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
