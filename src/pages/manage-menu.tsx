@@ -71,8 +71,15 @@ export default function Home() {
                     <TableCell>{item.category}</TableCell>
                     <TableCell >{`₹${item.price}`}</TableCell>
                     <TableCell>  
-                    <EditDialog refetch={async () => { await refetch();
-                    toast('please close the popup')
+                    <EditDialog refetch={async (): Promise<void> => { 
+                       try {
+                         toast('Please close the popup');
+                         await refetch(); // Assuming refetch is an asynchronous function that returns a Promise
+                      } catch (error) {
+                        // Handle any errors from the refetch
+                        console.error('Error while refetching:', error);
+                        toast('Error occurred. Please try again.'); // Display an error message using toast
+                      }
                     }} item={item} />
                       <button className="text-red-300" onClick={() => deleteMenuItem(item.id)}>
                         <Trash />

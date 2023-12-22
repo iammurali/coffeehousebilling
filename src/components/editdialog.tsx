@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Edit } from "lucide-react";
-import { MouseEventHandler, useState } from "react";
+import { BaseSyntheticEvent, MouseEventHandler, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
@@ -20,7 +20,7 @@ import { api } from "~/utils/api";
 import { editMenuItemSchema } from "~/utils/zodschema";
 type MenuItemType = RouterOutputs["menu"]["getAll"][number];
  
-export function EditDialog({refetch, item}: {refetch: ()=> void, item: MenuItemType}) {
+export function EditDialog({refetch, item}: {refetch: ()=> Promise<void>, item: MenuItemType}) {
     const [editedItem, setEditedItem] = useState(item);
     const [open, setOpen] = useState(false)
     console.log("log item vlauer::::",item)
@@ -52,10 +52,10 @@ export function EditDialog({refetch, item}: {refetch: ()=> void, item: MenuItemT
         <DialogHeader>
           <DialogTitle>Edit Menu Item</DialogTitle>
           <DialogDescription>
-            Make changes to your menu here. Click save when you're done.
+            {`Make changes to your menu here. Click save when you're done.`}
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={(): (e?: BaseSyntheticEvent<object, any, any> | undefined) => Promise<void> => handleSubmit(onSubmit)}>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="title" className="text-right">
