@@ -28,17 +28,32 @@ export function EditDialog({refetch, item}: {refetch: ()=> Promise<void>, item: 
         defaultValues: item // Set default values to the item
     });
     const editMutation = api.menu.editMenuItem.useMutation();
-    const onSubmit = (data: MenuItemType) => {
-        console.log(data)
-        // editMenuItem(data); // Call your mutation with the updated data
-        // Close dialog or perform additional actions after mutation
-        const result =  editMutation.mutate(data as z.infer<typeof editMenuItemSchema>,{
-            onSuccess: () => {
-                toast("Item edited successfully")
-                refetch()
-                setOpen(false)
-            }
-        })
+
+    const refetchData = async () => await refetch();
+    const onSubmit = (data: MenuItemType): void => {
+        try {
+            console.log(data)
+            // editMenuItem(data); // Call your mutation with the updated data
+            // Close dialog or perform additional actions after mutation
+            const result =  editMutation.mutate(data as z.infer<typeof editMenuItemSchema>,{
+                onSuccess: (): void => {
+                    try {
+                        toast("Item edited successfully")
+                        refetchData().then(()=>console.log('sucess')).catch(()=>console.log('failed'))
+                        setOpen(false)
+                    } catch (error) {
+                        toast("refetch failed")
+                        setOpen(false)
+                    }
+                  
+                }
+            })
+            
+        } catch (error) {
+            console.error(error)
+            
+        }
+       
     };
   
     return (
@@ -55,7 +70,7 @@ export function EditDialog({refetch, item}: {refetch: ()=> Promise<void>, item: 
             {`Make changes to your menu here. Click save when you're done.`}
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={(): (e?: BaseSyntheticEvent<object, any, any> | undefined) => Promise<void> => handleSubmit(onSubmit)}>
+        <form onSubmit={void handleSubmit(onSubmit)}>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="title" className="text-right">
