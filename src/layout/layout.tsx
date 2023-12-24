@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ThemeProvider } from "@/components/themeprovider";
 import { ModeToggle } from "~/components/darkmodetoggle";
 import { RouterOutputs } from "~/utils/api";
+
 // type MenuItemType = RouterOutputs["menu"]["getAll"][number];
 
 // type BillItemType = {
@@ -46,7 +47,7 @@ export const Layout = ({
                 <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
                   {/* Additional common header components can be added here */}
                   <span>
-                    {/* Total sales: ₹{ localStorage.getItem('bills') ? (JSON.parse(localStorage.getItem('bills')!) as Array).reduce((acc: number, obj: {total: number}) => {return acc+obj.total}, 0): '' } */}
+                  
                   </span>
                   <ModeToggle />
                 </div>

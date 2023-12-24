@@ -21,6 +21,24 @@ import {
 import { api } from "~/utils/api";
 import { type RouterOutputs } from "~/utils/api";
 import { toast } from 'react-hot-toast'
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+  DrawerFooter,
+} from "@/components/ui/drawer"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+// import { ComboboxDemo } from "~/components/menuSearchPopup";
+
 
 type MenuItemType = RouterOutputs["menu"]["getAll"][number];
 
@@ -65,6 +83,43 @@ export default function Home() {
     (acc, bill) => acc + (Number(bill.item.price) || 0) * bill.quantity,
     0,
   );
+
+  const getDrafts = () => {
+    let draftBillsArray: any[] = []
+    const draftBills = localStorage.getItem('draftBills')
+    if (draftBills) {
+      draftBillsArray = JSON.parse(draftBills)
+      return draftBillsArray.reverse()
+    } else {
+      return draftBillsArray
+    }
+
+  }
+
+  const holdBill = () => {
+    if(bills.length > 0) {
+      const draftBills = localStorage.getItem('draftBills')
+    if (draftBills) {
+      let draftBillsArray: any[] = JSON.parse(draftBills)
+      draftBillsArray = draftBillsArray.concat({
+        billId: Date.now().toString(),
+        billItems: bills,
+        total
+      })
+      localStorage.setItem('draftBills', JSON.stringify(draftBillsArray))
+    } else {
+      localStorage.setItem('draftBills', JSON.stringify([{
+        billId: Date.now().toString(),
+        billItems: bills,
+        total
+      }]))
+    }
+    setBill([])
+    } else {
+      toast('No items in bill list')
+    }
+    
+  }
 
   const printBill = () => {
     // This function could fetch data from your backend or use local state
@@ -265,6 +320,7 @@ export default function Home() {
           <div className="w-1/2 p-2">
             {/* Your left column content here */}
             <div className="h-[10%] flex flex-row items-center">
+              {/* <ComboboxDemo /> */}
               <Input
                 ref={searchRef}
                 placeholder="Search..."
@@ -283,15 +339,6 @@ export default function Home() {
                     compareStrings(sanitizedSearch, item.title.toLowerCase().replace(/\s/g, ''))
                   );
                   setFilteredData(filtered);
-                    // setFilteredData(
-                    //   data.filter(
-                    //     (item) =>
-                    //       item.title &&
-                    //       item.title
-                    //         .toLowerCase()
-                    //         .includes(searchText.toLowerCase()),
-                    //   ),
-                    // );
                   }
                 }}
               />
@@ -414,7 +461,7 @@ export default function Home() {
             <div className="flex flex-col justify-end h-[14%]">
               <div>
                 <div className="text-right"> {bills.length > 0 ? <b>TOTAL: {total}</b>: <b>TOTAL: 0</b>}</div>
-                <div className="grid grid-cols-4 gap-4 lg:pt-4">
+                <div className="grid grid-cols-5 gap-4 lg:pt-4">
 
                   <button
                     onClick={() => {setBill([])
@@ -430,11 +477,47 @@ export default function Home() {
                     Discount
                   </button>
                   <button
-                    onClick={() => handleButtonClick('Hold')}
+                    onClick={() => {
+                      holdBill()
+                    }}
                     className="bg-gray-500 hover:bg-gray-600 text-white py-2 rounded-md"
                   >
                     Hold
                   </button>
+                  <Drawer>
+                  <DrawerTrigger className="bg-red-500 hover:bg-red-600 text-white py-2 rounded-md">
+                    Drafts
+                  </DrawerTrigger>
+                  <DrawerContent>
+                    <DrawerHeader>
+                      <DrawerTitle className="text-center">Draft bills</DrawerTitle>
+                      <DrawerDescription></DrawerDescription>
+                    </DrawerHeader>
+                    <div className="flex flex-row justify-center p-4">
+                    
+                      <Accordion type="single" collapsible className="w-1/2 text-center">
+                      
+                      {getDrafts().map((bill: any) => (
+                        <AccordionItem value={bill.billId}>
+                        <AccordionTrigger>{bill.billId}</AccordionTrigger>
+                        <AccordionContent>
+                        <Button className="mr-2" onClick={()=>{
+                            setBill([...bill.billItems])
+                          }}>Restore</Button>
+                          {/* <Button variant={'destructive'} onClick={()=>{
+                            toast('Not functional yet')
+                          }}>Delete</Button> */}
+                        </AccordionContent>
+                      </AccordionItem>
+                     
+                      ))
+                    }
+                    </Accordion>
+                      
+                    </div>
+                  </DrawerContent>
+                </Drawer>
+                  
                   <button
                     onClick={() => {
 
