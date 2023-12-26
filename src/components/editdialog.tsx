@@ -32,6 +32,7 @@ export function EditDialog({refetch, item}: {refetch: ()=> Promise<void>, item: 
     const refetchData = async () => await refetch();
     const onSubmit = (data: MenuItemType): void => {
         try {
+            
             console.log(data)
             // editMenuItem(data); // Call your mutation with the updated data
             // Close dialog or perform additional actions after mutation
@@ -70,7 +71,10 @@ export function EditDialog({refetch, item}: {refetch: ()=> Promise<void>, item: 
             {`Make changes to your menu here. Click save when you're done.`}
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={void handleSubmit(onSubmit)}>
+        <form onSubmit={(event) => {
+      event.preventDefault();
+      void handleSubmit(onSubmit)(event);
+  }}>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="title" className="text-right">

@@ -20,7 +20,7 @@ import {
 
 import { api } from "~/utils/api";
 import { type RouterOutputs } from "~/utils/api";
-import { toast } from 'react-hot-toast'
+import { toast } from "react-hot-toast";
 import {
   Drawer,
   DrawerClose,
@@ -30,15 +30,17 @@ import {
   DrawerTitle,
   DrawerTrigger,
   DrawerFooter,
-} from "@/components/ui/drawer"
+} from "@/components/ui/drawer";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
-// import { ComboboxDemo } from "~/components/menuSearchPopup";
+} from "@/components/ui/accordion";
+import { ConfirmDialog } from "~/components/alertdialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
+// import { ComboboxDemo } from "~/components/menuSearchPopup";
 
 type MenuItemType = RouterOutputs["menu"]["getAll"][number];
 
@@ -51,7 +53,7 @@ type draftBillType = {
   billId?: string;
   billItems: BillItemType[];
   total: number;
-}
+};
 
 export default function Home() {
   const [filteredData, setFilteredData] = React.useState<MenuItemType[]>([]);
@@ -60,6 +62,9 @@ export default function Home() {
   const [bills, setBill] = React.useState<BillItemType[]>([]);
   const searchRef = useRef(null); // Create a reference for the search input
   const [selectedIndex, setSelectedIndex] = React.useState(-1);
+  const [draftBillsState, setDraftBillsState] = React.useState<draftBillType[]>(
+    [],
+  );
   React.useEffect(() => {
     if (data) {
       setFilteredData(data);
@@ -91,62 +96,76 @@ export default function Home() {
   );
 
   const getDrafts = () => {
-    let draftBillsArray: draftBillType[] = []
-    const draftBills = localStorage.getItem('draftBills')
+    let draftBillsArray: draftBillType[] = [];
+    const draftBills = localStorage.getItem("draftBills");
     if (draftBills) {
-      draftBillsArray = JSON.parse(draftBills)
-      return draftBillsArray?.reverse()
+      draftBillsArray = JSON.parse(draftBills);
+      setDraftBillsState(draftBillsArray?.reverse());
     } else {
-      return draftBillsArray
+      setDraftBillsState(draftBillsArray);
     }
+  };
 
-  }
+  const deleteAllDrafts = () => {
+    localStorage.setItem("draftBills", JSON.stringify([]));
+    toast("Deleted all drafts");
+    setDraftBillsState([]);
+  };
 
   const holdBill = () => {
-    if(bills.length > 0) {
-      const draftBills = localStorage.getItem('draftBills')
-    if (draftBills) {
-      let draftBillsArray: draftBillType[]= JSON.parse(draftBills)
-      draftBillsArray = draftBillsArray.concat({
-        billId: Date.now().toString(),
-        billItems: bills,
-        total
-      })
-      localStorage.setItem('draftBills', JSON.stringify(draftBillsArray))
+    if (bills.length > 0) {
+      const draftBills = localStorage.getItem("draftBills");
+      if (draftBills) {
+        let draftBillsArray: draftBillType[] = JSON.parse(draftBills);
+        draftBillsArray = draftBillsArray.concat({
+          billId: Date.now().toString(),
+          billItems: bills,
+          total,
+        });
+        localStorage.setItem("draftBills", JSON.stringify(draftBillsArray));
+      } else {
+        localStorage.setItem(
+          "draftBills",
+          JSON.stringify([
+            {
+              billId: Date.now().toString(),
+              billItems: bills,
+              total,
+            },
+          ]),
+        );
+      }
+      setBill([]);
     } else {
-      localStorage.setItem('draftBills', JSON.stringify([{
-        billId: Date.now().toString(),
-        billItems: bills,
-        total
-      }]))
+      toast("No items in bill list");
     }
-    setBill([])
-    } else {
-      toast('No items in bill list')
-    }
-    
-  }
+  };
 
   const printBill = () => {
     // This function could fetch data from your backend or use local state
     // to retrieve bill items and total. For this example, I'll use sample data.
-    const localBills = localStorage.getItem('bills')
+    const localBills = localStorage.getItem("bills");
     if (localBills) {
-      let billArray: any[] = JSON.parse(localBills)
+      let billArray: any[] = JSON.parse(localBills);
       billArray = billArray.concat({
         billId: Date.now().toString(),
         billItems: bills,
-        total
-      })
-      localStorage.setItem('bills', JSON.stringify(billArray))
+        total,
+      });
+      localStorage.setItem("bills", JSON.stringify(billArray));
     } else {
-      localStorage.setItem('bills', JSON.stringify([{
-        billId: Date.now().toString(),
-        billItems: bills,
-        total
-      }]))
+      localStorage.setItem(
+        "bills",
+        JSON.stringify([
+          {
+            billId: Date.now().toString(),
+            billItems: bills,
+            total,
+          },
+        ]),
+      );
     }
-    const billItems = bills
+    const billItems = bills;
     const totalAmount = total;
 
     const printContent = `
@@ -235,17 +254,25 @@ export default function Home() {
         </thead>
         <tbody>
           ${billItems
-        .map(
-          (item) => `
+            .map(
+              (item) => `
                 <tr class="item-separator">
                   <td style="font-weight: 600;">${item.item.title?.toUpperCase()}</td>
-                  <td style="text-align: center;font-weight: 600;">${item.quantity}</td>
-                  <td style="text-align: right;font-weight: 600;">${item.item.price != null ? Number(item.item.price) : 0}</td>
-                  <td style="text-align: right;font-weight: 600;">${item.item.price != null ? Number(item.item.price) * Number(item.quantity) : 0}</td>
+                  <td style="text-align: center;font-weight: 600;">${
+                    item.quantity
+                  }</td>
+                  <td style="text-align: right;font-weight: 600;">${
+                    item.item.price != null ? Number(item.item.price) : 0
+                  }</td>
+                  <td style="text-align: right;font-weight: 600;">${
+                    item.item.price != null
+                      ? Number(item.item.price) * Number(item.quantity)
+                      : 0
+                  }</td>
                 </tr>
-              `
-        )
-        .join('')}
+              `,
+            )
+            .join("")}
         </tbody>
       </table>
     </div>
@@ -286,7 +313,7 @@ export default function Home() {
 </html>
     `;
 
-    const printWindow = window.open('', '_blank');
+    const printWindow = window.open("", "_blank");
     if (printWindow) {
       printWindow.document.open();
       printWindow.document.write(printContent);
@@ -296,10 +323,10 @@ export default function Home() {
 
   const handleButtonClick = (event: string) => {
     // alert('These buttons are not functional as of now')
-    toast('Not functional')
-   }
+    toast("Not functional");
+  };
 
-   const compareStrings = (searchText: string, itemText: string): boolean => {
+  const compareStrings = (searchText: string, itemText: string): boolean => {
     if (searchText.length > itemText.length) return false;
 
     let i = 0;
@@ -315,228 +342,297 @@ export default function Home() {
     return i === searchText.length;
   };
 
-  if (isLoading) return <div className="flex flex-col items-center justify-center h-screen bg-black text-white">Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="flex h-screen flex-col items-center justify-center bg-black text-white">
+        Loading...
+      </div>
+    );
 
   if (error) return <div>{error.message}</div>;
 
   return (
     <>
       <Layout title="Home" description="Home page">
-        <div className="flex container mx-auto h-[88vh]">
-          <div className="w-1/2 p-2">
-            {/* Your left column content here */}
-            <div className="h-[10%] flex flex-row items-center">
-              {/* <ComboboxDemo /> */}
-              <Input
-                ref={searchRef}
-                placeholder="Search..."
-                autoFocus
-                className="mb-1 shadow-sm"
-                value={search}
-                onChange={(e) => {
-                  const searchText = e.target.value;
-                  setSearch(searchText);
-                  if (searchText.trim() === "") {
-                    setFilteredData(data);
-                  } else {
-                   const sanitizedSearch = searchText.trim().toLowerCase().replace(/\s/g, ''); // Remove spaces from search
-                  const filtered = data.filter(item =>
-                    item.title &&
-                    compareStrings(sanitizedSearch, item.title.toLowerCase().replace(/\s/g, ''))
+        <div className="w-1/2 p-2">
+          {/* Your left column content here */}
+          <div className="flex h-[10%] flex-row items-center">
+            {/* <ComboboxDemo /> */}
+            <Input
+              ref={searchRef}
+              placeholder="Search..."
+              autoFocus
+              className="mb-1 shadow-sm"
+              value={search}
+              onChange={(e) => {
+                const searchText = e.target.value;
+                setSearch(searchText);
+                if (searchText.trim() === "") {
+                  setFilteredData(data);
+                } else {
+                  const sanitizedSearch = searchText
+                    .trim()
+                    .toLowerCase()
+                    .replace(/\s/g, ""); // Remove spaces from search
+                  const filtered = data.filter(
+                    (item) =>
+                      item.title &&
+                      compareStrings(
+                        sanitizedSearch,
+                        item.title.toLowerCase().replace(/\s/g, ""),
+                      ),
                   );
                   setFilteredData(filtered);
-                  }
+                }
+              }}
+            />
+            {
+              <Button
+                variant={"secondary"}
+                className="ml-3"
+                onClick={() => {
+                  setSearch("");
+                  setFilteredData(data);
                 }}
-              />
-              {
-                <Button
-                  variant={"secondary"}
-                  className="ml-3"
-                  onClick={() => {
-                    setSearch("");
-                    setFilteredData(data);
-                  }}
-                >
-                  <XOctagon size={14} color="red" />
+              >
+                <XOctagon size={14} color="red" />
+              </Button>
+            }
+            {
+              <Link href="/manage-menu">
+                <Button variant={"outline"} className="ml-3">
+                  <Plus size={14} />
                 </Button>
-              }
-              {
-                <Link href="/manage-menu">
-                  <Button variant={"outline"} className="ml-3">
-                    <Plus size={14} />
-                  </Button>
-                </Link>
-              }
-            </div> 
-            <div className="h-[90%] grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-4 overflow-y-scroll">
-              {filteredData.map((item, index) => (
-                <div
-                  onClick={() => onSelect(item)}
-                  key={index}
-                  className={`flex h-20 flex-col items-center justify-between bg-card rounded-md border-sm px-2 py-4 text-sm  ${selectedIndex === index ? "bg-yellow-500" : ""
-                    }`}
-                >
-                  <p className="text-xs font-semibold">{item.title}</p>
-                  <p className="text-xs text-gray-500">{`₹${item.price}`}</p>
-                </div>
-              ))}
-            </div>
+              </Link>
+            }
           </div>
-          <div className="w-1/2 p-2">
-            {/* Your right column content here */}
-            <div className="overflow-x-scroll h-[86%]">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-left">Item</TableHead>
-                    <TableHead className="w-[100px] text-left">Price</TableHead>
-                    <TableHead className="w-[100px] text-center">
-                      Quantity
-                    </TableHead>
-                    <TableHead className="text-right">Amount</TableHead>
-                    <TableHead className="text-right">Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {bills.map((billItem, idx) => (
-                    <TableRow key={idx}>
-                      <TableCell className="p-1 font-medium">
-                        {billItem.item.title?.toUpperCase()}
-                      </TableCell>
-                      <TableCell className="p-1">
+          <div className="grid h-[90%] grid-cols-1 gap-2 overflow-y-scroll md:grid-cols-3 lg:grid-cols-4">
+            {filteredData.map((item, index) => (
+              <div
+                onClick={() => onSelect(item)}
+                key={index}
+                className={`border-sm flex h-20 flex-col items-center justify-between rounded-md bg-card px-2 py-4 text-sm  ${
+                  selectedIndex === index ? "bg-yellow-500" : ""
+                }`}
+              >
+                <p className="text-xs font-semibold">{item.title}</p>
+                <p className="text-xs text-gray-500">{`₹${item.price}`}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="h-88vh flex w-1/2 flex-col p-2">
+          {/* Your right column content here */}
+          <div className="h-[86%] overflow-x-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-left">Item</TableHead>
+                  <TableHead className="w-[100px] text-left">Price</TableHead>
+                  <TableHead className="w-[100px] text-center">
+                    Quantity
+                  </TableHead>
+                  <TableHead className="text-right">Amount</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {bills.map((billItem, idx) => (
+                  <TableRow key={idx}>
+                    <TableCell className="p-1 font-medium">
+                      {billItem.item.title}
+                    </TableCell>
+                    <TableCell className="p-1">
                       <Input
-                          type="string"
-                          value={billItem.item.price ? billItem.item.price : '0'}
-                          onChange={(e) =>
-                            setBill((prev) =>
-                              prev.map((bill, i) =>
-                                i === idx
-                                  ? {
+                        type="string"
+                        value={billItem.item.price ? billItem.item.price : "0"}
+                        onChange={(e) =>
+                          setBill((prev) =>
+                            prev.map((bill, i) =>
+                              i === idx
+                                ? {
                                     ...bill,
                                     item: {
                                       ...bill.item,
-                                      price: e.target.value
-                                    }
+                                      price: e.target.value,
+                                    },
                                   }
-                                  : bill,
-                              ),
-                            )
-                          }
-                        />
-                        {/* {billItem.item.price} */}
-                      </TableCell>
-                      <TableCell className="whitespace-nowrap p-1">
-                        <Input
-                          type="number"
-                          max={900}
-                          min={1}
-                          value={billItem.quantity}
-                          onChange={(e) =>
-                            setBill((prev) =>
-                              prev.map((bill, i) =>
-                                i === idx
-                                  ? {
+                                : bill,
+                            ),
+                          )
+                        }
+                      />
+                      {/* {billItem.item.price} */}
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap p-1">
+                      <Input
+                        type="number"
+                        max={900}
+                        min={1}
+                        value={billItem.quantity}
+                        onChange={(e) =>
+                          setBill((prev) =>
+                            prev.map((bill, i) =>
+                              i === idx
+                                ? {
                                     ...bill,
                                     quantity: Number(e.target.value),
                                   }
-                                  : bill,
-                              ),
-                            )
-                          }
-                        />
-                      </TableCell>
-                      <TableCell className="p-1 text-right">
-                        {Number(billItem.item.price) * billItem.quantity}
-                      </TableCell>
-                      <TableCell className="p-1 text-right">
-                        <Button
-                          variant={"outline"}
-                          onClick={() =>
-                            setBill((prev) => prev.filter((_, i) => i !== idx))
-                          }
-                        >
-                          <Trash2 size={16} />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-
-                </TableBody>
-              </Table>
-            </div>
-            <div className="flex flex-col justify-end h-[14%]">
-              <div>
-                <div className="text-right"> {bills.length > 0 ? <b>TOTAL: {total}</b>: <b>TOTAL: 0</b>}</div>
-                <div className="grid grid-cols-5 gap-4 lg:pt-4">
-
-                  <button
-                    onClick={() => {setBill([])
-                      toast('Cleared bill')}}
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-md"
+                                : bill,
+                            ),
+                          )
+                        }
+                      />
+                    </TableCell>
+                    <TableCell className="p-1 text-right">
+                      {Number(billItem.item.price) * billItem.quantity}
+                    </TableCell>
+                    <TableCell className="p-1 text-right">
+                      <Button
+                        variant={"outline"}
+                        onClick={() =>
+                          setBill((prev) => prev.filter((_, i) => i !== idx))
+                        }
+                      >
+                        <Trash2 size={16} />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          <div className="flex h-[14%] flex-col justify-end">
+            <div>
+              <div className="text-right">
+                {" "}
+                {bills.length > 0 ? <b>TOTAL: {total}</b> : <b>TOTAL: 0</b>}
+              </div>
+              <div className="grid grid-cols-5 gap-4 lg:pt-4">
+                <button
+                  onClick={() => {
+                    setBill([]);
+                    toast("Cleared bill");
+                  }}
+                  className="rounded-md bg-yellow-500 py-2 text-white hover:bg-yellow-600"
+                >
+                  Clear Bill
+                </button>
+                <button
+                  onClick={() => handleButtonClick("Discount")}
+                  className="rounded-md bg-purple-500 py-2 text-white hover:bg-purple-600"
+                >
+                  Discount
+                </button>
+                <button
+                  onClick={() => {
+                    holdBill();
+                  }}
+                  className="rounded-md bg-gray-500 py-2 text-white hover:bg-gray-600"
+                >
+                  Hold
+                </button>
+                <Drawer>
+                  <DrawerTrigger
+                    onClick={() => getDrafts()}
+                    className="rounded-md bg-red-500 py-2 text-white hover:bg-red-600"
                   >
-                    Clear Bill
-                  </button>
-                  <button
-                    onClick={() => handleButtonClick('Discount')}
-                    className="bg-purple-500 hover:bg-purple-600 text-white py-2 rounded-md"
-                  >
-                    Discount
-                  </button>
-                  <button
-                    onClick={() => {
-                      holdBill()
-                    }}
-                    className="bg-gray-500 hover:bg-gray-600 text-white py-2 rounded-md"
-                  >
-                    Hold
-                  </button>
-                  <Drawer>
-                  <DrawerTrigger className="bg-red-500 hover:bg-red-600 text-white py-2 rounded-md">
                     Drafts
                   </DrawerTrigger>
                   <DrawerContent>
                     <DrawerHeader>
-                      <DrawerTitle className="text-center">Draft bills</DrawerTitle>
+                      <DrawerTitle className="mx-48">Draft bills</DrawerTitle>
                       <DrawerDescription></DrawerDescription>
                     </DrawerHeader>
                     <div className="flex flex-row justify-center p-4">
-                    
-                      <Accordion type="single" collapsible className="w-1/2 text-center">
-                      
-                      {getDrafts().map((bill: any, idx: number) => (
-                        <AccordionItem key={idx} value={bill.billId}>
-                        <AccordionTrigger>{bill.billId}</AccordionTrigger>
-                        <AccordionContent>
-                        <Button className="mr-2" onClick={()=>{
-                            setBill([...bill.billItems])
-                          }}>Restore</Button>
-                          {/* <Button variant={'destructive'} onClick={()=>{
-                            toast('Not functional yet')
-                          }}>Delete</Button> */}
-                        </AccordionContent>
-                      </AccordionItem>
-                     
-                      ))
-                    }
-                    </Accordion>
-                      
+                      <ScrollArea className="flex h-96 w-[80%] items-center p-2">
+                        {
+                          <div className="text-right">
+                            <ConfirmDialog
+                              onClickYes={deleteAllDrafts}
+                              title="Delete all drafts"
+                            />
+                          </div>
+                        }
+                        <Accordion
+                          type="single"
+                          collapsible
+                          className="w-[98%] text-center"
+                        >
+                          {draftBillsState.map(
+                            (bill: draftBillType, idx: number) => (
+                              <div className="flex flex-row w-full items-center m-2 justify-between bg-neutral-800 rounded-md">
+                                <AccordionItem
+                                  className="w-[90%] border-none p-1"
+                                  key={idx}
+                                  value={bill.billId ? bill.billId : ""}
+                                >
+                                  <AccordionTrigger className="border-none">
+                                    <span>{bill.billId}</span>
+                                  </AccordionTrigger>
+                                  <AccordionContent>
+                                    <Table>
+                                      <TableHeader>
+                                        <TableRow>
+                                          <TableHead className="w-[200px] text-left">
+                                            Name
+                                          </TableHead>
+                                          <TableHead></TableHead>
+                                          <TableHead>Qty</TableHead>
+                                          <TableHead className="text-right">
+                                            Amount
+                                          </TableHead>
+                                        </TableRow>
+                                      </TableHeader>
+                                      <TableBody>
+                                        {bill.billItems.map(
+                                          (billItem: BillItemType) => (
+                                            <TableRow key={billItem.item.id}>
+                                              <TableCell className="font-medium text-left">
+                                                {billItem.item.title}
+                                              </TableCell>
+                                              <TableCell>{""}</TableCell>
+                                              <TableCell className="text-left">
+                                                {billItem.quantity}
+                                              </TableCell>
+                                              <TableCell className="text-right">
+                                                {billItem.item.price}
+                                              </TableCell>
+                                            </TableRow>
+                                          ),
+                                        )}
+                                      </TableBody>
+                                    </Table>
+                                  </AccordionContent>
+                                </AccordionItem>
+                                <Button
+                                    className=" mr-2"
+                                    onClick={() => {
+                                      setBill([...bill.billItems]);
+                                    }}
+                                  >
+                                    Restore
+                                  </Button>
+                              </div>
+                            ),
+                          )}
+                        </Accordion>
+                      </ScrollArea>
                     </div>
                   </DrawerContent>
                 </Drawer>
-                  
-                  <button
-                    onClick={() => {
 
-                      printBill()
-                      setBill([])
-                      toast('Billing success')
-                    }}
-                    className="bg-green-500 hover:bg-green-600 text-white py-2 rounded-md"
-                  >
-                    Print Bill
-                  </button>
-                  {/* Add more buttons for various POS actions */}
-                </div>
+                <button
+                  onClick={() => {
+                    printBill();
+                    setBill([]);
+                    toast("Billing success");
+                  }}
+                  className="rounded-md bg-green-500 py-2 text-white hover:bg-green-600"
+                >
+                  Print Bill
+                </button>
+                {/* Add more buttons for various POS actions */}
               </div>
             </div>
           </div>
