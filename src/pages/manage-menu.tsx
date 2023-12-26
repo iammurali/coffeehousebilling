@@ -50,7 +50,6 @@ export default function Home() {
   return (
     <>
       <Layout title="Home" description="Home page">
-       
           <div className="w-1/4">
             <AddMenuForm />
           </div>

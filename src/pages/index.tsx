@@ -56,6 +56,7 @@ type draftBillType = {
 };
 
 export default function Home() {
+  const drawerTriggerRef = useRef<HTMLButtonElement>(null);
   const [filteredData, setFilteredData] = React.useState<MenuItemType[]>([]);
   const [search, setSearch] = React.useState("");
   const { isLoading, data, error } = api.menu.getAll.useQuery();
@@ -65,6 +66,44 @@ export default function Home() {
   const [draftBillsState, setDraftBillsState] = React.useState<draftBillType[]>(
     [],
   );
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    // Check if Ctrl + D is pressed
+    event.preventDefault()
+    if (event.ctrlKey && event.key === 'd') {
+      // Simulate click on the DrawerTrigger element
+      if(drawerTriggerRef && drawerTriggerRef.current) {
+        drawerTriggerRef.current.click();
+      }
+    }
+    if (event.ctrlKey && event.key === 'p') {
+      // Simulate click on the DrawerTrigger element
+      event.preventDefault()
+      printBill()
+    }
+    if (event.ctrlKey && event.key === 'h') {
+      // Simulate click on the DrawerTrigger element
+      event.preventDefault()
+      holdBill()
+    }
+    console.log(event.key)
+    if (event.ctrlKey && event.key === ' ') {
+      // Simulate click on the DrawerTrigger element
+      event.preventDefault()
+      setBill([])
+    }
+  };
+
+  React.useEffect(() => {
+    // Add event listener for keydown
+    document.addEventListener('keydown', handleKeyDown);
+
+    // Clean up the event listener
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   React.useEffect(() => {
     if (data) {
       setFilteredData(data);
@@ -514,9 +553,9 @@ export default function Home() {
                     setBill([]);
                     toast("Cleared bill");
                   }}
-                  className="rounded-md bg-yellow-500 py-2 text-white hover:bg-yellow-600"
+                  className="rounded-md text-xs bg-yellow-900 py-2 text-white hover:bg-yellow-600"
                 >
-                  Clear Bill
+                  Clear(Ctrl+space)
                 </button>
                 <button
                   onClick={() => handleButtonClick("Discount")}
@@ -530,14 +569,15 @@ export default function Home() {
                   }}
                   className="rounded-md bg-gray-500 py-2 text-white hover:bg-gray-600"
                 >
-                  Hold
+                  Hold (Ctrl+H)
                 </button>
                 <Drawer>
                   <DrawerTrigger
+                    ref={drawerTriggerRef}
                     onClick={() => getDrafts()}
                     className="rounded-md bg-red-500 py-2 text-white hover:bg-red-600"
                   >
-                    Drafts
+                    Drafts(Ctrl+D)
                   </DrawerTrigger>
                   <DrawerContent>
                     {/* <DrawerHeader>
@@ -625,12 +665,11 @@ export default function Home() {
                 <button
                   onClick={() => {
                     printBill();
-                    setBill([]);
                     toast("Billing success");
                   }}
                   className="rounded-md bg-green-500 py-2 text-white hover:bg-green-600"
                 >
-                  Print Bill
+                  Print (Ctrl+P)
                 </button>
                 {/* Add more buttons for various POS actions */}
               </div>
