@@ -1,6 +1,8 @@
 # TODO
 [ ] Add option to directly add item in the bill table
 [ ] Bill history
+[ ] Only keyboard operation search, print, save
+
 
 
 # Backlog
@@ -9,7 +11,8 @@
 [ ] implement table
 
 # Done
-[X] Drafts
+[x] Drafts
+[x] implement shortcuts
 
 # Create T3 App
 
