@@ -72,9 +72,9 @@ export default function Home() {
     event.preventDefault()
     if (event.ctrlKey && event.key === 'd') {
       // Simulate click on the DrawerTrigger element
-      if(drawerTriggerRef && drawerTriggerRef.current) {
-        drawerTriggerRef.current.click();
-      }
+      // if(drawerTriggerRef && drawerTriggerRef.current) {
+        drawerTriggerRef?.current?.click();
+      // }
     }
     if (event.ctrlKey && event.key === 'p') {
       // Simulate click on the DrawerTrigger element
