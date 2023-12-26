@@ -47,6 +47,12 @@ type BillItemType = {
   quantity: number;
 };
 
+type draftBillType = {
+  billId?: string;
+  billItems: BillItemType[];
+  total: number;
+}
+
 export default function Home() {
   const [filteredData, setFilteredData] = React.useState<MenuItemType[]>([]);
   const [search, setSearch] = React.useState("");
@@ -85,11 +91,11 @@ export default function Home() {
   );
 
   const getDrafts = () => {
-    let draftBillsArray: any[] = []
+    let draftBillsArray: draftBillType[] = []
     const draftBills = localStorage.getItem('draftBills')
     if (draftBills) {
       draftBillsArray = JSON.parse(draftBills)
-      return draftBillsArray.reverse()
+      return draftBillsArray?.reverse()
     } else {
       return draftBillsArray
     }
@@ -100,7 +106,7 @@ export default function Home() {
     if(bills.length > 0) {
       const draftBills = localStorage.getItem('draftBills')
     if (draftBills) {
-      let draftBillsArray: any[] = JSON.parse(draftBills)
+      let draftBillsArray: draftBillType[]= JSON.parse(draftBills)
       draftBillsArray = draftBillsArray.concat({
         billId: Date.now().toString(),
         billItems: bills,
@@ -497,8 +503,8 @@ export default function Home() {
                     
                       <Accordion type="single" collapsible className="w-1/2 text-center">
                       
-                      {getDrafts().map((bill: any) => (
-                        <AccordionItem value={bill.billId}>
+                      {getDrafts().map((bill: any, idx: number) => (
+                        <AccordionItem key={idx} value={bill.billId}>
                         <AccordionTrigger>{bill.billId}</AccordionTrigger>
                         <AccordionContent>
                         <Button className="mr-2" onClick={()=>{
