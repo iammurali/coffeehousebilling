@@ -57,6 +57,7 @@ type draftBillType = {
 
 export default function Home() {
   const drawerTriggerRef = useRef<HTMLButtonElement>(null);
+  const printTriggerRef = useRef<HTMLButtonElement>(null);
   const [filteredData, setFilteredData] = React.useState<MenuItemType[]>([]);
   const [search, setSearch] = React.useState("");
   const { isLoading, data, error } = api.menu.getAll.useQuery();
@@ -80,7 +81,7 @@ export default function Home() {
     if (event.ctrlKey && event.key === 'p') {
       // Simulate click on the DrawerTrigger element
       event.preventDefault()
-      printBill()
+      printTriggerRef?.current?.click()
     }
     if (event.ctrlKey && event.key === 'h') {
       // Simulate click on the DrawerTrigger element
@@ -664,6 +665,7 @@ export default function Home() {
                 </Drawer>
 
                 <button
+                  ref={printTriggerRef}
                   onClick={() => {
                     printBill();
                     toast("Billing success");
