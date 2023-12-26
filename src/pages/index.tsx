@@ -540,14 +540,14 @@ export default function Home() {
                     Drafts
                   </DrawerTrigger>
                   <DrawerContent>
-                    <DrawerHeader>
+                    {/* <DrawerHeader>
                       <DrawerTitle className="mx-48">Draft bills</DrawerTitle>
                       <DrawerDescription></DrawerDescription>
-                    </DrawerHeader>
+                    </DrawerHeader> */}
                     <div className="flex flex-row justify-center p-4">
-                      <ScrollArea className="flex h-96 w-[80%] items-center p-2">
+                      <ScrollArea className="flex h-96 w-[75%] items-center p-2">
                         {
-                          <div className="text-right">
+                          <div className="text-right mr-4">
                             <ConfirmDialog
                               onClickYes={deleteAllDrafts}
                               title="Delete all drafts"
@@ -561,10 +561,10 @@ export default function Home() {
                         >
                           {draftBillsState.map(
                             (bill: draftBillType, idx: number) => (
-                              <div className="flex flex-row w-full items-center m-2 justify-between bg-neutral-800 rounded-md">
+                              <div key={idx} className="flex flex-row w-full items-center m-2 justify-between bg-neutral-800 rounded-md">
                                 <AccordionItem
                                   className="w-[90%] border-none p-1"
-                                  key={idx}
+                                  
                                   value={bill.billId ? bill.billId : ""}
                                 >
                                   <AccordionTrigger className="border-none">

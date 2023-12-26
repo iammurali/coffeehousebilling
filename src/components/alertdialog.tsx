@@ -11,7 +11,7 @@ import {
   } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
  
-export function ConfirmDialog({title, onClickYes}: {title: string, onClickYes: Function}) {
+export function ConfirmDialog({title, onClickYes}: {title: string, onClickYes: () => void}) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -27,7 +27,7 @@ export function ConfirmDialog({title, onClickYes}: {title: string, onClickYes: F
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => onClickYes()}>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={() : void=> onClickYes()}>Continue</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
