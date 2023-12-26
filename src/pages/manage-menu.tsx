@@ -50,7 +50,7 @@ export default function Home() {
   return (
     <>
       <Layout title="Home" description="Home page">
-        <div className="flex flex-row container mt-10 h-[89vh]">
+       
           <div className="w-1/4">
             <AddMenuForm />
           </div>
@@ -92,7 +92,7 @@ export default function Home() {
 
             {/* <EditableTable columns={columns} data={payments}  /> */}
           </div>
-        </div>
+   
 
       </Layout>
     </>
