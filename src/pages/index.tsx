@@ -69,8 +69,9 @@ export default function Home() {
 
   const handleKeyDown = (event: KeyboardEvent) => {
     // Check if Ctrl + D is pressed
-    event.preventDefault()
     if (event.ctrlKey && event.key === 'd') {
+      event.preventDefault()
+
       // Simulate click on the DrawerTrigger element
       // if(drawerTriggerRef && drawerTriggerRef.current) {
         drawerTriggerRef?.current?.click();
