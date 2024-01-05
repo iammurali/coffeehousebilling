@@ -32,7 +32,7 @@ export default function Bills() {
   useEffect(()=>{
     const localBillsString: string | null = localStorage.getItem('bills');
     if(localBillsString) {
-      const localBills: LocalBillType[] = JSON.parse(localBillsString)
+      const localBills: LocalBillType[] = JSON.parse(localBillsString) as LocalBillType[];
       const sortFromLatest: LocalBillType[] = localBills.reverse()
       setBills(sortFromLatest)
       getTodaysSales()
