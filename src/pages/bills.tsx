@@ -30,7 +30,7 @@ export default function Bills() {
   const [todaysBills, setTodaysBills] = useState<LocalBillType[]>([]);
 
   useEffect(()=>{
-    const localBillsString = localStorage.getItem('bills');
+    const localBillsString: string | null = localStorage.getItem('bills');
     if(localBillsString) {
       const localBills: LocalBillType[] = JSON.parse(localBillsString)
       const sortFromLatest = localBills.reverse()
@@ -81,7 +81,7 @@ export default function Bills() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {todaysBills && todaysBills.map((singlebill: LocalBillType, idx: number) => (
+        {todaysBills ? todaysBills.map((singlebill: LocalBillType, idx: number) => (
           <TableRow key={singlebill.billId}>
             <TableCell className="font-medium">{idx+1}</TableCell>
 
@@ -90,7 +90,7 @@ export default function Bills() {
             <TableCell>{}</TableCell>
             <TableCell className="text-right">{singlebill.total}</TableCell>
           </TableRow>
-        ))}
+        )) : <span></span>}
       </TableBody>
       <TableFooter>
         <TableRow>
