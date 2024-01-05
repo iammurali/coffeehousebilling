@@ -33,10 +33,9 @@ export default function Bills() {
     const localBillsString: string | null = localStorage.getItem('bills');
     if(localBillsString) {
       const localBills: LocalBillType[] = JSON.parse(localBillsString)
-      const sortFromLatest = localBills.reverse()
+      const sortFromLatest: LocalBillType[] = localBills.reverse()
       setBills(sortFromLatest)
       getTodaysSales()
-      
     }
   },[])
 
