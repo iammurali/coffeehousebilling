@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { ThemeProvider } from "@/components/themeprovider";
 import { ModeToggle } from "~/components/darkmodetoggle";
+import { NavMenu } from "~/components/navmenu";
 
 export const Layout = ({
   children,
@@ -34,10 +35,10 @@ export const Layout = ({
                   Edaikazhinadu coffee house
                 </span>
               </Link>
+              <NavMenu />
             </div>
             <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
               {/* Additional common header components can be added here */}
-              <span></span>
               <ModeToggle />
             </div>
           </div>
