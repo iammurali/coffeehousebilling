@@ -37,9 +37,12 @@ export default function Bills() {
       const sortFromLatest: LocalBillType[] = localBills.reverse()
       console.log(sortFromLatest, 'latestbills')
       setBills(sortFromLatest)
-      getTodaysSales()
     }
   },[])
+
+  useEffect(()=>{
+    getTodaysSales()
+  },[bills])
 
   const getDateTime= (date?: string) => {
 
@@ -49,16 +52,15 @@ export default function Bills() {
   }
 
   const getTodaysSales = () => {
-    setTimeout(()=> {
+
       const today = new Date().toDateString()
       console.log('todays date', today);
       const todaysBillsFiltered = bills.filter((singleBill: LocalBillType) => {
-        const dateofBill = new Date(Number(singleBill.billId)).toDateString()
-        return today === dateofBill;
+        return today === new Date(Number(singleBill.billId)).toDateString();
       })
       console.log(todaysBillsFiltered, 'todays bills')
       setTodaysBills(todaysBillsFiltered)
-    }, 1000)
+
 
   }
 
