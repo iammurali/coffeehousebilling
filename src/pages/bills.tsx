@@ -31,28 +31,21 @@ export default function Bills() {
 
   useEffect(()=>{
     const localBillsString: string | null = localStorage.getItem('bills');
-    if(localBillsString) {
-      // @ts-ignore
-      const localBills: LocalBillType[] = JSON.parse(localBillsString)
+    if(localBillsString !== null) {
+      const localBills = JSON.parse(localBillsString) as LocalBillType[];
       console.log(localBills, 'localstorage')
       const sortFromLatest: LocalBillType[] = localBills.reverse()
+      console.log(sortFromLatest, 'latestbills')
       setBills(sortFromLatest)
       getTodaysSales()
     }
   },[])
 
-  const getDate = (date?: string) => {
+  const getDateTime= (date?: string) => {
 
     const dateofbill = new Date(Number(date))
 
     return dateofbill.toLocaleString();
-  }
-
-  const getDateOnly = (date?: string) => {
-
-    const dateofbill = new Date(Number(date))
-
-    return dateofbill;
   }
 
   const getTodaysSales = () => {
@@ -60,8 +53,8 @@ export default function Bills() {
       const today = new Date().toDateString()
       console.log('todays date', today);
       const todaysBillsFiltered = bills.filter((singleBill: LocalBillType) => {
-        console.log(new Date(Number(singleBill.billId)).toDateString())
-        return today === new Date(Number(singleBill.billId)).toDateString()
+        const dateofBill = new Date(Number(singleBill.billId)).toDateString()
+        return today === dateofBill;
       })
       console.log(todaysBillsFiltered, 'todays bills')
       setTodaysBills(todaysBillsFiltered)
@@ -86,7 +79,7 @@ export default function Bills() {
           <TableRow key={singlebill.billId}>
             <TableCell className="font-medium">{idx+1}</TableCell>
 
-            <TableCell className="font-medium">{getDate(singlebill.billId)}</TableCell>
+            <TableCell className="font-medium">{getDateTime(singlebill.billId)}</TableCell>
             <TableCell>{singlebill.billItems.length}</TableCell>
             <TableCell>{}</TableCell>
             <TableCell className="text-right">{singlebill.total}</TableCell>
