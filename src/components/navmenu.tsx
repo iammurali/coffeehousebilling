@@ -75,7 +75,7 @@ export function NavMenu() {
         <NavigationMenuItem>
           <Link href="/bills" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Bills
+              Reports
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
