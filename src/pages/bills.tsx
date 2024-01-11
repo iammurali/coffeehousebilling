@@ -109,10 +109,7 @@ export default function Bills() {
     setTodaysBills(todaysBillsFiltered);
     let mostSoldItems = getMostSoldItemsWithCount(bills);
     console.log(mostSoldItems, "most sold items");
-    if (mostSoldItems && mostSoldItems.length > 10) {
-      mostSoldItems = mostSoldItems.slice(0, 8);
-      setMostSoldItems(mostSoldItems);
-    }
+    setMostSoldItems(mostSoldItems);
   };
 
   const getSalesPerMonthThisYear = (): SalesPerMonthType[] => {
