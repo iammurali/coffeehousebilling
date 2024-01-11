@@ -107,7 +107,7 @@ export default function Bills() {
     });
     console.log(todaysBillsFiltered, "todays bills");
     setTodaysBills(todaysBillsFiltered);
-    let mostSoldItems = getMostSoldItemsWithCount(bills);
+    const mostSoldItems = getMostSoldItemsWithCount(bills);
     console.log(mostSoldItems, "most sold items");
     setMostSoldItems(mostSoldItems);
   };
