@@ -27,11 +27,13 @@ type LocalBillType = {
 };
 
 type BillCountType = { item: MenuItemType; count: number | undefined };
+type SalesPerMonthType = { month: string; totalSales: number | undefined };
 
 export default function Bills() {
   const [bills, setBills] = useState<LocalBillType[]>([]);
   const [todaysBills, setTodaysBills] = useState<LocalBillType[]>([]);
   const [mostSoldItems, setMostSoldItems] = useState<BillCountType[]>([]);
+  const [salesPerMonth, setSalesPerMonth] = useState<SalesPerMonthType[]>([])
 
   useEffect(() => {
     const localBillsString: string | null = localStorage.getItem("bills");
@@ -46,6 +48,7 @@ export default function Bills() {
 
   useEffect(() => {
     getTodaysSales();
+    getSalesPerMonthThisYear();
   }, [bills]);
 
   const getMostSoldItemsWithCount = (
@@ -112,10 +115,37 @@ export default function Bills() {
     }
   };
 
+  const getSalesPerMonthThisYear = (): SalesPerMonthType[] => {
+    const currentYear = new Date().getFullYear();
+    // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+    const salesPerMonth: { [month: string]: number } = {};
+  
+    bills.forEach((bill) => {
+      const dateOfBill = new Date(Number(bill.billId));
+      // if (dateOfBill.getFullYear() === currentYear) {
+        const monthYear = `${dateOfBill.getFullYear()}-${(dateOfBill.getMonth() + 1).toString().padStart(2, '0')}`;
+        
+        if (salesPerMonth[monthYear]) {
+          salesPerMonth[monthYear] += bill.total;
+        } else {
+          salesPerMonth[monthYear] = bill.total;
+        }
+      // }
+    });
+  
+    const salesData = Object.keys(salesPerMonth).map((month) => ({
+      month,
+      totalSales: salesPerMonth[month] ?? 0,
+    }));
+    setSalesPerMonth(salesData)
+  
+    return salesData;
+  };
+
   return (
     <Layout title="Bills" description="Bills page">
       <div className="flex-col w-full">
-      {/* <ReportBarChart bills={mostSoldItems} /> */}
+      <ReportBarChart bills={salesPerMonth} />
       {/* table for sales count */}
       <div className="space-y-2 mt-4">
         <h4 className="text-sm font-medium leading-none">Todays sales</h4>
