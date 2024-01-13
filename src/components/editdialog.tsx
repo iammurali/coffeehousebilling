@@ -23,7 +23,6 @@ type MenuItemType = RouterOutputs["menu"]["getAll"][number];
 export function EditDialog({refetch, item}: {refetch: ()=> Promise<void>, item: MenuItemType}) {
     const [editedItem, setEditedItem] = useState(item);
     const [open, setOpen] = useState(false)
-    console.log("log item vlauer::::",item)
     const { register, handleSubmit, setValue } = useForm({
         defaultValues: item // Set default values to the item
     });

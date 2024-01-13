@@ -74,7 +74,7 @@ export function NavMenu() {
         </NavigationMenuItem> */}
   
         <NavigationMenuItem>
-          <Link href="//manage-menu" legacyBehavior passHref>
+          <Link href="/manage-menu" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               Manage Menu
             </NavigationMenuLink>
