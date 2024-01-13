@@ -267,7 +267,7 @@ export default function Home() {
             {/* <ComboboxDemo /> */}
             <Input
               ref={searchRef}
-              placeholder="Search..."
+              placeholder="Press / key to Search..."
               autoFocus
               className="mb-1 shadow-sm"
               value={search}
