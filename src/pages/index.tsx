@@ -39,15 +39,14 @@ import {
 } from "@/components/ui/accordion";
 import { ConfirmDialog } from "~/components/alertdialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { generatePrintContent } from "~/utils/constants";
+import { BillItemType } from "~/utils/common-types";
 
 // import { ComboboxDemo } from "~/components/menuSearchPopup";
 
 type MenuItemType = RouterOutputs["menu"]["getAll"][number];
 
-type BillItemType = {
-  item: MenuItemType;
-  quantity: number;
-};
+
 
 type draftBillType = {
   billId?: string;
@@ -62,13 +61,14 @@ export default function Home() {
   const [search, setSearch] = React.useState("");
   const { isLoading, data, error } = api.menu.getAll.useQuery();
   const [bills, setBill] = React.useState<BillItemType[]>([]);
-  const searchRef = useRef(null); // Create a reference for the search input
+  const searchRef = useRef<HTMLInputElement>(null); // Create a reference for the search input
   const [selectedIndex, setSelectedIndex] = React.useState(-1);
   const [draftBillsState, setDraftBillsState] = React.useState<draftBillType[]>(
     [],
   );
 
   const handleKeyDown = (event: KeyboardEvent) => {
+    // console.log('event key pressed:::', event.key);
     // Check if Ctrl + D is pressed
     if (event.ctrlKey && event.key === 'd') {
       event.preventDefault()
@@ -93,6 +93,12 @@ export default function Home() {
       // Simulate click on the DrawerTrigger element
       event.preventDefault()
       setBill([])
+    }
+    if (event.key === '/') {
+      // Simulate click on the DrawerTrigger element
+      event.preventDefault()
+      console.log('set focus to input')
+      searchRef.current?.focus()
     }
   };
 
@@ -128,6 +134,9 @@ export default function Home() {
     }
     // else add the item to the bill
     setBill((prev) => [...prev, { item, quantity: 1 }]);
+    // TODO: Make this setting enabled via environment variable or variable from local storage or a class variable
+    setSearch('')
+    searchRef.current?.focus()
   };
 
   // add total of all the items price, null check price and convert to number and check quantity and multiply with price
@@ -209,151 +218,7 @@ export default function Home() {
     const billItems = bills;
     const totalAmount = total;
 
-    const printContent = `
-    <html>
-<head>
-  <title>Bill</title>
-  <style>
-    /* Styles for the bill */
-    body {
-      font-family: monospace;
-      padding: 0;
-      font-size: 15px;
-      font-weight: 600;
-      -webkit-font-smoothing: none; /* Disable font smoothing */
-      font-smoothing: none;
-      width: 72mm; /* Set width to 72mm */
-    }
-    @media print {
-      body {
-        margin: 0;
-        padding: 1mm; /* Add padding for better visual appearance */
-      }
-    }
-    .bill {
-      border: 1px solid #ccc;
-      padding: 2mm;
-      max-width: 72mm;
-      margin: 0 auto;
-    }
-    .restaurant-name {
-      font-size: 16px;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    .center {
-      margin-top: 5px;
-      text-align: center;
-    }
-    .bill-items {
-      margin-bottom: 20px;
-    }
-    .bill-items table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .bill-items th, .bill-items td {
-      padding: 5px 0;
-      text-align: left;
-    }
-    .item-separator {
-      // border-bottom: 1px dashed #000;
-    }
-    .total {
-      font-weight: bold;
-      text-align: right;
-      padding-top: 10px;
-    }
-    .personal-message {
-      font-size: 14px;
-      font-style: italic;
-      text-align: center;
-      margin-top: 5px;
-    }
-    .footer {
-      font-size: 12px;
-      text-align: center;
-      margin-top: 5px;
-    }
-  </style>
-</head>
-<body>
-  <div class="bill">
-  <img src="/coffeehouselogo.jpg" alt="Restaurant Logo" style="display: block; margin: 0 auto; max-width: 70%;" />
-  <div class="restaurant-name">Edaikazhinadu Coffee House</div>
-  <div class="center item-separator" style="margin-bottom: 2px;font-size: 14px;"><span>Vilambur, ECR, Phone: 9715019994</span></div>
-
-    <div class="bill-items">
-      <table>
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th style="text-align: center;">Qty</th>
-            <th style="text-align: right;">Rs</th>
-            <th style="text-align: right;">Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${billItems
-            .map(
-              (item) => `
-                <tr class="item-separator">
-                  <td style="font-weight: 600;">${item.item.title?.toUpperCase()}</td>
-                  <td style="text-align: center;font-weight: 600;">${
-                    item.quantity
-                  }</td>
-                  <td style="text-align: right;font-weight: 600;">${
-                    item.item.price != null ? Number(item.item.price) : 0
-                  }</td>
-                  <td style="text-align: right;font-weight: 600;">${
-                    item.item.price != null
-                      ? Number(item.item.price) * Number(item.quantity)
-                      : 0
-                  }</td>
-                </tr>
-              `,
-            )
-            .join("")}
-        </tbody>
-      </table>
-    </div>
-    <div class="total">
-      Total: ${totalAmount}
-    </div>
-    
-    <div class="personal-message">
-      பகுத்துண்டு பல்லுயிர் ஓம்புதல்
-    </div>
-    
-    <div class="footer">
-    - @edaikazhinadu_coffee_house -
-    </div>
-  </div>
-  <script>
-    // Automatically trigger print dialog when the window loads
-    window.onload = function() {
-      function getCurrentDateTime() {
-        const now = new Date();
-        const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-        return now.toLocaleDateString('en-US', options);
-      }
-  
-      // Insert the current date and time into the bill
-      const currentDate = getCurrentDateTime();
-      const dateTimeElement = document.createElement('div');
-      dateTimeElement.innerText = currentDate;
-      dateTimeElement.classList.add('center');
-      dateTimeElement.classList.add('item-separator');
-      document.querySelector('.bill').insertBefore(dateTimeElement, document.querySelector('.restaurant-name'));
-  
-      // Trigger print dialog after modifying the bill content
-      window.print();
-    };
-  </script>
-</body>
-</html>
-    `;
+    const printContent = generatePrintContent(billItems, totalAmount);
 
     const printWindow = window.open("", "_blank");
     if (printWindow) {
@@ -429,37 +294,30 @@ export default function Home() {
               }}
             />
             {
-              <Button
-                variant={"secondary"}
-                className="ml-3"
-                onClick={() => {
-                  setSearch("");
-                  setFilteredData(data);
-                }}
-              >
-                <XOctagon size={14} color="red" />
-              </Button>
-            }
-            {
-              <Link href="/manage-menu">
-                <Button variant={"outline"} className="ml-3">
-                  <Plus size={14} />
-                </Button>
-              </Link>
+              // <Button
+              //   variant={"secondary"}
+              //   className="ml-3"
+              //   onClick={() => {
+              //     setSearch("");
+              //     setFilteredData(data);
+              //   }}
+              // >
+              //   <XOctagon size={14} color="red" />
+              // </Button>
             }
           </div>
           <div className="grid h-[90%] grid-cols-1 gap-2 overflow-y-scroll md:grid-cols-3 lg:grid-cols-4">
             {filteredData.map((item, index) => (
-              <div
+              <Button
                 onClick={() => onSelect(item)}
                 key={index}
                 className={`border-sm flex h-20 flex-col items-center justify-between rounded-md bg-card px-2 py-4 text-sm  ${
                   selectedIndex === index ? "bg-yellow-500" : ""
                 }`}
               >
-                <p className="text-xs font-semibold">{item.title}</p>
+                <p className="text-xs font-semibold text-gray-50">{item.title}</p>
                 <p className="text-xs text-gray-500">{`₹${item.price}`}</p>
-              </div>
+              </Button>
             ))}
           </div>
         </div>
@@ -684,3 +542,5 @@ export default function Home() {
     </>
   );
 }
+
+

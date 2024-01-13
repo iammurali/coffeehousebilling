@@ -72,6 +72,14 @@ export function NavMenu() {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem> */}
+  
+        <NavigationMenuItem>
+          <Link href="//manage-menu" legacyBehavior passHref>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              Manage Menu
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
         <NavigationMenuItem>
           <Link href="/bills" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
