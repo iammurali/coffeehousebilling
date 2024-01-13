@@ -163,6 +163,7 @@ export default function Home() {
   };
 
   const holdBill = () => {
+    console.log(bills, 'billls +', bills.length)
     if (bills.length > 0) {
       const draftBills = localStorage.getItem("draftBills");
       if (draftBills) {
@@ -187,6 +188,7 @@ export default function Home() {
       }
       setBill([]);
     } else {
+      console.log(bills)
       toast("No items in bill list");
     }
   };
@@ -409,7 +411,7 @@ export default function Home() {
                 {bills.length > 0 ? <b>TOTAL: {total}</b> : <b>TOTAL: 0</b>}
               </div>
               <div className="grid grid-cols-5 gap-4 lg:pt-4">
-                <button
+                <Button
                   onClick={() => {
                     setBill([]);
                     toast("Cleared bill");
@@ -417,21 +419,21 @@ export default function Home() {
                   className="rounded-md text-xs bg-yellow-900 py-2 text-white hover:bg-yellow-600"
                 >
                   Clear(Ctrl+space)
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => handleButtonClick("Discount")}
                   className="rounded-md bg-purple-500 py-2 text-white hover:bg-purple-600"
                 >
                   Discount
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => {
                     holdBill();
                   }}
-                  className="rounded-md bg-gray-500 py-2 text-white hover:bg-gray-600"
+                  className="rounded-md bg-gray-500 text-xs py-2 text-white hover:bg-gray-600"
                 >
                   Hold (Ctrl+H)
-                </button>
+                </Button>
                 <Drawer>
                   <DrawerTrigger
                     ref={drawerTriggerRef}
