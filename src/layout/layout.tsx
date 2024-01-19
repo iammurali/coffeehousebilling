@@ -43,7 +43,7 @@ export const Layout = ({
             </div>
           </div>
         </header>
-        <main className="flex h-[calc(100vh-3.53rem)] w-full flex-row items-center">
+        <main className="flex h-[calc(100vh-3.532rem)] w-full flex-row items-center">
           {/* <aside className="fixed  hidden h-[88vh] w-[60px] shrink-0 md:sticky md:block">
             Drawer
           </aside> */}
