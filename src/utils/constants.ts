@@ -1,6 +1,6 @@
 import { BillItemType } from "./common-types";
 
-let quote = 'இனிய பொங்கல் திருநாள் நல்வாழ்த்துக்கள்'
+const quote = 'பகுத்துண்டு பல்லுயிர் ஓம்புதல்'
 
 export function generatePrintContent(billItems: BillItemType[], totalAmount: number) {
     return `

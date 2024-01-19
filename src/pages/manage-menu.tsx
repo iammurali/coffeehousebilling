@@ -89,7 +89,6 @@ export default function Home() {
               </TableBody>
             </Table>
 
-            {/* <EditableTable columns={columns} data={payments}  /> */}
           </div>
    
 

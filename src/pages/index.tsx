@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Plus, Trash2, XOctagon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon, Minus, Plus, Trash2, XOctagon } from "lucide-react";
 import Link from "next/link";
 import React, { useRef } from "react";
 import { Button } from "~/components/ui/button";
@@ -41,6 +41,7 @@ import { ConfirmDialog } from "~/components/alertdialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { generatePrintContent } from "~/utils/constants";
 import { BillItemType } from "~/utils/common-types";
+import { Separator } from "~/components/ui/separator";
 
 // import { ComboboxDemo } from "~/components/menuSearchPopup";
 
@@ -66,6 +67,7 @@ export default function Home() {
   const [draftBillsState, setDraftBillsState] = React.useState<draftBillType[]>(
     [],
   );
+  const [favoriteItems, setFavoriteItems] = React.useState<MenuItemType[]>([])
 
   const handleKeyDown = (event: KeyboardEvent) => {
     // console.log('event key pressed:::', event.key);
@@ -75,7 +77,7 @@ export default function Home() {
 
       // Simulate click on the DrawerTrigger element
       // if(drawerTriggerRef && drawerTriggerRef.current) {
-        drawerTriggerRef?.current?.click();
+      drawerTriggerRef?.current?.click();
       // }
     }
     if (event.ctrlKey && event.key === 'p') {
@@ -94,9 +96,9 @@ export default function Home() {
       event.preventDefault()
       setBill([])
     }
-    if (event.key === '/') {
+    if (event.key === ' ') {
       // Simulate click on the DrawerTrigger element
-      event.preventDefault()
+      // event.preventDefault()
       console.log('set focus to input')
       searchRef.current?.focus()
     }
@@ -117,6 +119,17 @@ export default function Home() {
       setFilteredData(data);
     }
   }, [data]);
+
+  React.useEffect(() => {
+    const existingFavItems = localStorage.getItem('favItems')
+    if (existingFavItems) {
+        const parsedExistingFavItems: MenuItemType[] = JSON.parse(existingFavItems);
+        if (existingFavItems) {
+            setFavoriteItems(parsedExistingFavItems)
+        }
+    }
+
+}, []);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSelect = (item: any) => {
@@ -264,12 +277,13 @@ export default function Home() {
     <>
       <Layout title="Home" description="Home page">
         <div className="w-1/2 p-2">
+
           {/* Your left column content here */}
           <div className="flex h-[10%] flex-row items-center">
             {/* <ComboboxDemo /> */}
             <Input
               ref={searchRef}
-              placeholder="Press / key to Search..."
+              placeholder="Press Space key to Search..."
               autoFocus
               className="mb-1 shadow-sm"
               value={search}
@@ -308,17 +322,29 @@ export default function Home() {
               // </Button>
             }
           </div>
-          <div className="grid h-[90%] grid-cols-1 gap-2 overflow-y-scroll md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid h-[60%] grid-cols-1 gap-2 overflow-y-scroll md:grid-cols-3 lg:grid-cols-4 mb-2">
             {filteredData.map((item, index) => (
               <Button
                 onClick={() => onSelect(item)}
                 key={index}
-                className={`border-sm flex h-20 flex-col items-center justify-between rounded-md bg-card px-2 py-4 text-sm  ${
-                  selectedIndex === index ? "bg-yellow-500" : ""
-                }`}
+                className={`border-sm flex-grow h-20 min-w-0 flex-col items-center justify-between rounded-md bg-card px-2 py-4 text-sm`}
               >
                 <p className="text-xs font-semibold text-gray-50">{item.title}</p>
                 <p className="text-xs text-gray-500">{`₹${item.price}`}</p>
+              </Button>
+            ))}
+          </div>
+          {/* favorites */}
+          <Separator className="my-2" />
+          <div className="grid h-[30%]  grid-cols-1 gap-1 md:grid-cols-3 lg:grid-cols-4 p-1 overflow-y-scroll">
+           
+            {favoriteItems.slice(0, 20).map((item, index) => (
+              <Button
+                onClick={() => onSelect(item)}
+                key={index}
+                className={`border-sm min-w-0 h-14 rounded-md bg-card px-2 py-4 text-sm`}
+              >
+                <p className="text-sm font-semibold text-gray-50">{item.title}</p>
               </Button>
             ))}
           </div>
@@ -341,7 +367,7 @@ export default function Home() {
               <TableBody>
                 {bills.map((billItem, idx) => (
                   <TableRow key={idx}>
-                    <TableCell className="p-1 font-medium">
+                    <TableCell className="p-[0.5] font-medium">
                       {billItem.item.title}
                     </TableCell>
                     <TableCell className="p-1">
@@ -353,12 +379,12 @@ export default function Home() {
                             prev.map((bill, i) =>
                               i === idx
                                 ? {
-                                    ...bill,
-                                    item: {
-                                      ...bill.item,
-                                      price: e.target.value,
-                                    },
-                                  }
+                                  ...bill,
+                                  item: {
+                                    ...bill.item,
+                                    price: e.target.value,
+                                  },
+                                }
                                 : bill,
                             ),
                           )
@@ -366,26 +392,52 @@ export default function Home() {
                       />
                       {/* {billItem.item.price} */}
                     </TableCell>
-                    <TableCell className="whitespace-nowrap p-1">
+                    <TableCell className="whitespace-nowrap flex">
+                      <Button disabled={billItem.quantity == 0 } variant="outline" size="icon">
+                        <Minus onClick={()=>setBill((prev) =>
+                            prev.map((bill, i) =>
+                              i === idx
+                                ? {
+                                  ...bill,
+                                  quantity: bill.quantity-1,
+                                }
+                                : bill,
+                            ),
+                          )} />
+                      </Button>
                       <Input
                         type="number"
                         max={900}
                         min={1}
+                        inputMode="numeric"
                         value={billItem.quantity}
                         onChange={(e) =>
                           setBill((prev) =>
                             prev.map((bill, i) =>
                               i === idx
                                 ? {
-                                    ...bill,
-                                    quantity: Number(e.target.value),
-                                  }
+                                  ...bill,
+                                  quantity: Number(e.target.value),
+                                }
                                 : bill,
                             ),
                           )
                         }
                       />
+                      <Button variant="outline" size="icon">
+                        <Plus onClick={()=>setBill((prev) =>
+                            prev.map((bill, i) =>
+                              i === idx
+                                ? {
+                                  ...bill,
+                                  quantity: bill.quantity+1,
+                                }
+                                : bill,
+                            ),
+                          )} />
+                      </Button>
                     </TableCell>
+
                     <TableCell className="p-1 text-right">
                       {Number(billItem.item.price) * billItem.quantity}
                     </TableCell>
@@ -467,7 +519,7 @@ export default function Home() {
                               <div key={idx} className="flex flex-row w-full items-center m-2 justify-between bg-neutral-800 rounded-md">
                                 <AccordionItem
                                   className="w-[90%] border-none p-1"
-                                  
+
                                   value={bill.billId ? bill.billId : ""}
                                 >
                                   <AccordionTrigger className="border-none">
@@ -509,13 +561,13 @@ export default function Home() {
                                   </AccordionContent>
                                 </AccordionItem>
                                 <Button
-                                    className=" mr-2"
-                                    onClick={() => {
-                                      setBill([...bill.billItems]);
-                                    }}
-                                  >
-                                    Restore
-                                  </Button>
+                                  className=" mr-2"
+                                  onClick={() => {
+                                    setBill([...bill.billItems]);
+                                  }}
+                                >
+                                  Restore
+                                </Button>
                               </div>
                             ),
                           )}
