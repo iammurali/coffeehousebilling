@@ -320,7 +320,7 @@ export default function Home() {
               <Button
                 onClick={() => onSelect(item)}
                 key={index}
-                className={`border-sm flex-grow h-20 min-w-0 flex-col items-center justify-between rounded-md bg-black dark:bg-card px-2 py-4 text-sm`}
+                className={`border-sm flex-grow h-20 min-w-0 flex-col items-center justify-between rounded-md bg-card px-2 py-4 text-sm`}
               >
                 <p className="text-xs font-semibold text-gray-50">{item.title}</p>
                 <p className="text-xs text-gray-500">{`₹${item.price}`}</p>
@@ -335,14 +335,14 @@ export default function Home() {
               <Button
                 onClick={() => onSelect(item)}
                 key={index}
-                className={`border-sm min-w-0 h-14 rounded-md bg-black dark:bg-card px-2 py-4 text-sm`}
+                className={`border-sm min-w-0 h-14 rounded-md bg-card px-2 py-4 text-sm`}
               >
                 <p className="text-sm font-semibold text-gray-50">{item.title}</p>
               </Button>
             ))}
           </div>
         </div>
-        <div className="h-88vh flex w-1/2 flex-col p-2">
+        <div className="h-88vh border rounded-r-lg border-stone-700 flex w-1/2 flex-col p-2">
           {/* Your right column content here */}
           <div className="h-[86%] overflow-x-hidden">
             <Table>
@@ -468,15 +468,17 @@ export default function Home() {
                   Clear (Ctrl+Space)
                 </Button>
                 <Button
-                  onClick={() => handleButtonClick("Discount")}
-                  className="rounded-md py-2 text-white hover:bg-indigo-800"
+                  onClick={() => handleButtonClick("Bills")}
+                  variant={'secondary'}
+                  className="rounded-md py-2 bg-gray-600 text-white hover:bg-indigo-800"
                 >
-                  Previous
+                  Bills
                 </Button>
                 <Button
                   onClick={() => {
                     holdBill();
                   }}
+                  variant={'outline'}
                   className="rounded-md bg-gray-600 text-xs py-2 text-white hover:bg-gray-800"
                 >
                   Hold 
