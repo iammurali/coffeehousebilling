@@ -1,11 +1,6 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { BellRing } from "lucide-react";
 import Head from "next/head";
-import Link from "next/link";
 import React from "react";
 import { MenuSearch } from "~/components/menusearch";
-import { MenuSearchEmbed } from "~/components/menusearchembed";
-import { Button } from "~/components/ui/button";
 
 import { api } from "~/utils/api";
 import { type RouterOutputs } from "~/utils/api";

@@ -1,18 +1,12 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { RouterOutputs } from '~/utils/api';
+import { type RouterOutputs } from '~/utils/api';
 
-type MenuItemType = RouterOutputs["menu"]["getAll"][number];
 
 type SalesPerMonthType = { month: string; totalSales: number | undefined };
 
 
 export default function ReportBarChart({bills}: {bills: SalesPerMonthType[]}) {
-
-    
-
-    console.log(bills, 'chart bills')
-
     return (<ResponsiveContainer width="100%" height="100%">
     <BarChart
       width={500}

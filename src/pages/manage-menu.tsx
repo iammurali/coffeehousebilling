@@ -1,21 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Plus, Trash2, XOctagon, Edit, Trash } from "lucide-react";
-import Link from "next/link";
-import React, { useRef } from "react";
+import { Trash } from "lucide-react";
+import React from "react";
 import toast from "react-hot-toast";
 import { AddMenuForm } from "~/components/addmenuform";
-import { columns, payments } from "~/components/columns";
-import { EditableTable } from "~/components/editabletable";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell, TableFooter } from "~/components/ui/table";
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "~/components/ui/table";
 import { Layout } from "~/layout/layout";
 import { api } from "~/utils/api";
-import { editMenuItemSchema } from "~/utils/zodschema"
 
 import { type RouterOutputs } from "~/utils/api";
-import { z } from "zod";
 import { EditDialog } from "~/components/editdialog";
 
 type MenuItemType = RouterOutputs["menu"]["getAll"][number];

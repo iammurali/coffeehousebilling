@@ -1,4 +1,4 @@
-import { BillItemType } from "./common-types";
+import { type BillItemType } from "./common-types";
 
 const quote = 'பகுத்துண்டு பல்லுயிர் ஓம்புதல்'
 

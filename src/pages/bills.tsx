@@ -1,7 +1,6 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableFooter,
   TableHead,
@@ -12,7 +11,7 @@ import { useEffect, useState } from "react";
 import ReportBarChart from "~/components/barchart";
 import { Separator } from "~/components/ui/separator";
 import { Layout } from "~/layout/layout";
-import { RouterOutputs } from "~/utils/api";
+import { type RouterOutputs } from "~/utils/api";
 type MenuItemType = RouterOutputs["menu"]["getAll"][number];
 
 type BillItemType = {
@@ -45,11 +44,6 @@ export default function Bills() {
       setBills(sortFromLatest);
     }
   }, []);
-
-  useEffect(() => {
-    getTodaysSales();
-    getSalesPerMonthThisYear();
-  }, [bills]);
 
   const getMostSoldItemsWithCount = (
     bills: LocalBillType[],
@@ -113,43 +107,48 @@ export default function Bills() {
   };
 
   const getSalesPerMonthThisYear = (): SalesPerMonthType[] => {
-    const currentYear = new Date().getFullYear();
     // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
     const salesPerMonth: { [month: string]: number } = {};
-  
+
     bills.forEach((bill) => {
       const dateOfBill = new Date(Number(bill.billId));
       // if (dateOfBill.getFullYear() === currentYear) {
-        const monthYear = `${dateOfBill.getFullYear()}-${(dateOfBill.getMonth() + 1).toString().padStart(2, '0')}`;
-        
-        if (salesPerMonth[monthYear]) {
-          salesPerMonth[monthYear] += bill.total;
-        } else {
-          salesPerMonth[monthYear] = bill.total;
-        }
+      const monthYear = `${dateOfBill.getFullYear()}-${(dateOfBill.getMonth() + 1).toString().padStart(2, '0')}`;
+
+      if (salesPerMonth[monthYear]) {
+        salesPerMonth[monthYear] += bill.total;
+      } else {
+        salesPerMonth[monthYear] = bill.total;
+      }
       // }
     });
-  
+
     const salesData = Object.keys(salesPerMonth).map((month) => ({
       month,
       totalSales: salesPerMonth[month] ?? 0,
     }));
     setSalesPerMonth(salesData)
-  
+
     return salesData;
   };
+
+  useEffect(() => {
+    getTodaysSales();
+    getSalesPerMonthThisYear();
+  }, [bills]);
+
 
   return (
     <Layout title="Bills" description="Bills page">
       <div className="flex-col w-full">
-      <ReportBarChart bills={salesPerMonth} />
-      {/* table for sales count */}
-      <div className="space-y-2 mt-4">
-        <h4 className="text-sm font-medium leading-none">Todays sales</h4>
-        <p className="text-sm text-muted-foreground">
-          this shows the todays sales with bill value and overall total today
-        </p>
-      </div>
+        <ReportBarChart bills={salesPerMonth} />
+        {/* table for sales count */}
+        <div className="space-y-2 mt-4">
+          <h4 className="text-sm font-medium leading-none">Todays sales</h4>
+          <p className="text-sm text-muted-foreground">
+            this shows the todays sales with bill value and overall total today
+          </p>
+        </div>
         <Table>
           <TableHeader>
             <TableRow>
@@ -169,7 +168,7 @@ export default function Bills() {
                     {getDateTime(singlebill.billId)}
                   </TableCell>
                   <TableCell>{singlebill.billItems.length}</TableCell>
-                  <TableCell>{}</TableCell>
+                  <TableCell>{ }</TableCell>
                   <TableCell className="text-right">
                     {singlebill.total}
                   </TableCell>
@@ -194,12 +193,12 @@ export default function Bills() {
         </Table>
         {/* table for sales count */}
         <div className="space-y-2 mt-4">
-        <h4 className="text-sm font-medium leading-none">Overall sales count</h4>
-        <p className="text-sm text-muted-foreground">
-          this shows the overall sales count for each item which have been billed
-        </p>
-      </div>
-      <Separator className="my-4" />
+          <h4 className="text-sm font-medium leading-none">Overall sales count</h4>
+          <p className="text-sm text-muted-foreground">
+            this shows the overall sales count for each item which have been billed
+          </p>
+        </div>
+        <Separator className="my-4" />
         <Table className="items-center">
           <TableHeader>
             <TableRow>

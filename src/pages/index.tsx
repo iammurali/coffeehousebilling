@@ -2,16 +2,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChevronLeftIcon, ChevronRightIcon, Minus, Plus, Trash2, XOctagon } from "lucide-react";
-import Link from "next/link";
-import React, { useRef } from "react";
+import { Minus, Plus, Trash2 } from "lucide-react";
+import React, { useEffect, useRef } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Layout } from "~/layout/layout";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -23,13 +21,8 @@ import { type RouterOutputs } from "~/utils/api";
 import { toast } from "react-hot-toast";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
   DrawerTrigger,
-  DrawerFooter,
 } from "@/components/ui/drawer";
 import {
   Accordion,
@@ -40,7 +33,7 @@ import {
 import { ConfirmDialog } from "~/components/alertdialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { generatePrintContent } from "~/utils/constants";
-import { BillItemType } from "~/utils/common-types";
+import { type BillItemType } from "~/utils/common-types";
 import { Separator } from "~/components/ui/separator";
 
 // import { ComboboxDemo } from "~/components/menuSearchPopup";
@@ -63,11 +56,22 @@ export default function Home() {
   const { isLoading, data, error } = api.menu.getAll.useQuery();
   const [bills, setBill] = React.useState<BillItemType[]>([]);
   const searchRef = useRef<HTMLInputElement>(null); // Create a reference for the search input
-  const [selectedIndex, setSelectedIndex] = React.useState(-1);
   const [draftBillsState, setDraftBillsState] = React.useState<draftBillType[]>(
     [],
   );
   const [favoriteItems, setFavoriteItems] = React.useState<MenuItemType[]>([])
+  const bottomEl = useRef<HTMLTableSectionElement>(null);
+
+  const scrollToBottom = () => {
+    // bottomEl?.current?.scrollIntoView({ behavior: 'smooth' });
+    const lastElement = bottomEl?.current?.lastElementChild;
+    console.log(lastElement, 'last elemetn')
+    lastElement?.scrollIntoView({behavior: 'smooth'})
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, []); 
 
   const handleKeyDown = (event: KeyboardEvent) => {
     // console.log('event key pressed:::', event.key);
@@ -123,13 +127,13 @@ export default function Home() {
   React.useEffect(() => {
     const existingFavItems = localStorage.getItem('favItems')
     if (existingFavItems) {
-        const parsedExistingFavItems: MenuItemType[] = JSON.parse(existingFavItems);
-        if (existingFavItems) {
-            setFavoriteItems(parsedExistingFavItems)
-        }
+      const parsedExistingFavItems: MenuItemType[] = JSON.parse(existingFavItems);
+      if (existingFavItems) {
+        setFavoriteItems(parsedExistingFavItems)
+      }
     }
 
-}, []);
+  }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSelect = (item: any) => {
@@ -148,6 +152,7 @@ export default function Home() {
     // else add the item to the bill
     setBill((prev) => [...prev, { item, quantity: 1 }]);
     // TODO: Make this setting enabled via environment variable or variable from local storage or a class variable
+    scrollToBottom()
     setSearch('')
     searchRef.current?.focus()
   };
@@ -243,7 +248,7 @@ export default function Home() {
     }
   };
 
-  const handleButtonClick = (event: string) => {
+  const handleButtonClick = (_event: string) => {
     // alert('These buttons are not functional as of now')
     toast("Not functional");
   };
@@ -276,10 +281,10 @@ export default function Home() {
   return (
     <>
       <Layout title="Home" description="Home page">
-        <div className="w-1/2 p-2">
+        <div className="w-1/2 p-2 88vh">
 
           {/* Your left column content here */}
-          <div className="flex h-[10%] flex-row items-center">
+          <div className="flex h-[7%] flex-row items-center">
             {/* <ComboboxDemo /> */}
             <Input
               ref={searchRef}
@@ -309,25 +314,13 @@ export default function Home() {
                 }
               }}
             />
-            {
-              // <Button
-              //   variant={"secondary"}
-              //   className="ml-3"
-              //   onClick={() => {
-              //     setSearch("");
-              //     setFilteredData(data);
-              //   }}
-              // >
-              //   <XOctagon size={14} color="red" />
-              // </Button>
-            }
           </div>
-          <div className="grid h-[60%] grid-cols-1 gap-2 overflow-y-scroll md:grid-cols-3 lg:grid-cols-4 mb-2">
+          <div className="grid h-[60%] grid-cols-1 gap-2 overflow-y-scroll md:grid-cols-3 lg:grid-cols-4 my-2">
             {filteredData.map((item, index) => (
               <Button
                 onClick={() => onSelect(item)}
                 key={index}
-                className={`border-sm flex-grow h-20 min-w-0 flex-col items-center justify-between rounded-md bg-card px-2 py-4 text-sm`}
+                className={`border-sm flex-grow h-20 min-w-0 flex-col items-center justify-between rounded-md bg-black dark:bg-card px-2 py-4 text-sm`}
               >
                 <p className="text-xs font-semibold text-gray-50">{item.title}</p>
                 <p className="text-xs text-gray-500">{`₹${item.price}`}</p>
@@ -336,13 +329,13 @@ export default function Home() {
           </div>
           {/* favorites */}
           <Separator className="my-2" />
-          <div className="grid h-[30%]  grid-cols-1 gap-1 md:grid-cols-3 lg:grid-cols-4 p-1 overflow-y-scroll">
-           
+          <div className="grid h-[29%]  grid-cols-1 gap-1 md:grid-cols-3 lg:grid-cols-4 p-1 overflow-y-scroll">
+
             {favoriteItems.slice(0, 20).map((item, index) => (
               <Button
                 onClick={() => onSelect(item)}
                 key={index}
-                className={`border-sm min-w-0 h-14 rounded-md bg-card px-2 py-4 text-sm`}
+                className={`border-sm min-w-0 h-14 rounded-md bg-black dark:bg-card px-2 py-4 text-sm`}
               >
                 <p className="text-sm font-semibold text-gray-50">{item.title}</p>
               </Button>
@@ -364,7 +357,7 @@ export default function Home() {
                   <TableHead className="text-right">Action</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody ref={bottomEl}>
                 {bills.map((billItem, idx) => (
                   <TableRow key={idx}>
                     <TableCell className="p-[0.5] font-medium">
@@ -393,17 +386,17 @@ export default function Home() {
                       {/* {billItem.item.price} */}
                     </TableCell>
                     <TableCell className="whitespace-nowrap flex">
-                      <Button disabled={billItem.quantity == 0 } variant="outline" size="icon">
-                        <Minus onClick={()=>setBill((prev) =>
-                            prev.map((bill, i) =>
-                              i === idx
-                                ? {
-                                  ...bill,
-                                  quantity: bill.quantity-1,
-                                }
-                                : bill,
-                            ),
-                          )} />
+                      <Button disabled={billItem.quantity == 0} variant="outline" size="icon">
+                        <Minus onClick={() => setBill((prev) =>
+                          prev.map((bill, i) =>
+                            i === idx
+                              ? {
+                                ...bill,
+                                quantity: bill.quantity - 1,
+                              }
+                              : bill,
+                          ),
+                        )} />
                       </Button>
                       <Input
                         type="number"
@@ -425,16 +418,16 @@ export default function Home() {
                         }
                       />
                       <Button variant="outline" size="icon">
-                        <Plus onClick={()=>setBill((prev) =>
-                            prev.map((bill, i) =>
-                              i === idx
-                                ? {
-                                  ...bill,
-                                  quantity: bill.quantity+1,
-                                }
-                                : bill,
-                            ),
-                          )} />
+                        <Plus onClick={() => setBill((prev) =>
+                          prev.map((bill, i) =>
+                            i === idx
+                              ? {
+                                ...bill,
+                                quantity: bill.quantity + 1,
+                              }
+                              : bill,
+                          ),
+                        )} />
                       </Button>
                     </TableCell>
 
@@ -453,52 +446,51 @@ export default function Home() {
                     </TableCell>
                   </TableRow>
                 ))}
+                {/* <div ref={bottomEl}></div> */}
+                <div style={{ height: '5rem' }} />
               </TableBody>
             </Table>
           </div>
           <div className="flex h-[14%] flex-col justify-end">
             <div>
-              <div className="text-right">
-                {" "}
+              <div className="text-right font-bold">
                 {bills.length > 0 ? <b>TOTAL: {total}</b> : <b>TOTAL: 0</b>}
               </div>
-              <div className="grid grid-cols-5 gap-4 lg:pt-4">
+              <div className="grid grid-cols-5 gap-4 lg:pt-1">
                 <Button
                   onClick={() => {
                     setBill([]);
                     toast("Cleared bill");
                   }}
-                  className="rounded-md text-xs bg-yellow-900 py-2 text-white hover:bg-yellow-600"
+                  variant="destructive"
+                  className="rounded-md text-xs py-2 text-white hover:bg-gray-600"
                 >
-                  Clear(Ctrl+space)
+                  Clear (Ctrl+Space)
                 </Button>
                 <Button
                   onClick={() => handleButtonClick("Discount")}
-                  className="rounded-md bg-purple-500 py-2 text-white hover:bg-purple-600"
+                  className="rounded-md py-2 text-white hover:bg-indigo-800"
                 >
-                  Discount
+                  Previous
                 </Button>
                 <Button
                   onClick={() => {
                     holdBill();
                   }}
-                  className="rounded-md bg-gray-500 text-xs py-2 text-white hover:bg-gray-600"
+                  className="rounded-md bg-gray-600 text-xs py-2 text-white hover:bg-gray-800"
                 >
-                  Hold (Ctrl+H)
+                  Hold 
+                  (Ctrl+H)
                 </Button>
                 <Drawer>
                   <DrawerTrigger
                     ref={drawerTriggerRef}
                     onClick={() => getDrafts()}
-                    className="rounded-md bg-red-500 py-2 text-white hover:bg-red-600"
+                    className="rounded-md bg-gray-600 text-xs py-2 text-white hover:bg-gray-800"
                   >
                     Drafts(Ctrl+D)
                   </DrawerTrigger>
                   <DrawerContent>
-                    {/* <DrawerHeader>
-                      <DrawerTitle className="mx-48">Draft bills</DrawerTitle>
-                      <DrawerDescription></DrawerDescription>
-                    </DrawerHeader> */}
                     <div className="flex flex-row justify-center p-4">
                       <ScrollArea className="flex h-96 w-[75%] items-center p-2">
                         {
@@ -576,18 +568,16 @@ export default function Home() {
                     </div>
                   </DrawerContent>
                 </Drawer>
-
-                <button
+                <Button
                   ref={printTriggerRef}
                   onClick={() => {
                     printBill();
                     toast("Billing success");
                   }}
-                  className="rounded-md bg-green-500 py-2 text-white hover:bg-green-600"
+                  className="rounded-md  text-xs py-2 text-white hover:bg-gray-800"
                 >
                   Print (Ctrl+P)
-                </button>
-                {/* Add more buttons for various POS actions */}
+                </Button>
               </div>
             </div>
           </div>

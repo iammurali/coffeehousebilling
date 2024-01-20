@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Edit } from "lucide-react";
-import { BaseSyntheticEvent, MouseEventHandler, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
@@ -23,7 +23,7 @@ type MenuItemType = RouterOutputs["menu"]["getAll"][number];
 export function EditDialog({refetch, item}: {refetch: ()=> Promise<void>, item: MenuItemType}) {
     const [editedItem, setEditedItem] = useState(item);
     const [open, setOpen] = useState(false)
-    const { register, handleSubmit, setValue } = useForm({
+    const { register, handleSubmit } = useForm({
         defaultValues: item // Set default values to the item
     });
     const editMutation = api.menu.editMenuItem.useMutation();
@@ -35,19 +35,6 @@ export function EditDialog({refetch, item}: {refetch: ()=> Promise<void>, item: 
             console.log(data)
             // editMenuItem(data); // Call your mutation with the updated data
             // Close dialog or perform additional actions after mutation
-            const result =  editMutation.mutate(data as z.infer<typeof editMenuItemSchema>,{
-                onSuccess: (): void => {
-                    try {
-                        toast("Item edited successfully")
-                        refetchData().then(()=>console.log('sucess')).catch(()=>console.log('failed'))
-                        setOpen(false)
-                    } catch (error) {
-                        toast("refetch failed")
-                        setOpen(false)
-                    }
-                  
-                }
-            })
             
         } catch (error) {
             console.error(error)

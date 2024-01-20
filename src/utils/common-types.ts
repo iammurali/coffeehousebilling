@@ -1,4 +1,4 @@
-import { RouterOutputs } from "./api";
+import { type RouterOutputs } from "./api";
 
 export type MenuItemType = RouterOutputs["menu"]["getAll"][number];
 

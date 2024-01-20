@@ -1,26 +1,19 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { BellRing } from "lucide-react";
-import Head from "next/head";
-import Link from "next/link";
 import React from "react";
-import { MenuSearch } from "~/components/menusearch";
-import { MenuSearchEmbed } from "~/components/menusearchembed";
 import { Button } from "~/components/ui/button";
 import { Layout } from "~/layout/layout";
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell, TableFooter } from "~/components/ui/table";
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "~/components/ui/table";
 
 
 import { api } from "~/utils/api";
-import { type RouterOutputs } from "~/utils/api";
 import { Separator } from "~/components/ui/separator";
-import { MenuItemType } from "~/utils/common-types";
+import { type MenuItemType } from "~/utils/common-types";
 import toast from "react-hot-toast";
 
 
 export default function Shortcut() {
     const [filteredData, setFilteredData] = React.useState<MenuItemType[]>([]);
     const [favoriteItems, setFavoriteItems] = React.useState<MenuItemType[]>([])
-    const { isLoading, data, error, refetch } = api.menu.getAll.useQuery();
+    const { isLoading, data, error } = api.menu.getAll.useQuery();
 
     React.useEffect(() => {
         if (data) {
