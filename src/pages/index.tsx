@@ -66,12 +66,12 @@ export default function Home() {
     // bottomEl?.current?.scrollIntoView({ behavior: 'smooth' });
     const lastElement = bottomEl?.current?.lastElementChild;
     console.log(lastElement, 'last elemetn')
-    lastElement?.scrollIntoView({behavior: 'smooth'})
+    lastElement?.scrollIntoView({ behavior: 'smooth' })
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, []); 
+  }, []);
 
   const handleKeyDown = (event: KeyboardEvent) => {
     // console.log('event key pressed:::', event.key);
@@ -281,7 +281,7 @@ export default function Home() {
   return (
     <>
       <Layout title="Home" description="Home page">
-        <div className="w-1/2 p-2 88vh">
+        <div className="w-1/2 p-2 mr-1 88vh border rounded-l-sm border-stone-800">
 
           {/* Your left column content here */}
           <div className="flex h-[7%] flex-row items-center">
@@ -315,7 +315,7 @@ export default function Home() {
               }}
             />
           </div>
-          <div className="grid h-[60%] grid-cols-1 gap-2 overflow-y-scroll md:grid-cols-3 lg:grid-cols-4 my-2">
+          <div className="grid h-[60%] grid-cols-1 gap-2 overflow-auto overflow-y-scroll md:grid-cols-3 lg:grid-cols-4 my-2">
             {filteredData.map((item, index) => (
               <Button
                 onClick={() => onSelect(item)}
@@ -329,25 +329,25 @@ export default function Home() {
           </div>
           {/* favorites */}
           <Separator className="my-2" />
-          <div className="grid h-[29%]  grid-cols-1 gap-1 md:grid-cols-3 lg:grid-cols-4 p-1 overflow-y-scroll">
+          <div className="grid h-[29%]  grid-cols-1 gap-1 md:grid-cols-3 lg:grid-cols-4 p-1 hover:overflow-y-scroll">
 
             {favoriteItems.slice(0, 20).map((item, index) => (
               <Button
                 onClick={() => onSelect(item)}
                 key={index}
-                className={`border-sm min-w-0 h-14 rounded-md bg-card px-2 py-4 text-sm`}
+                className={`border-sm min-w-0 h-12 rounded-md bg-card px-2 py-4 text-sm`}
               >
                 <p className="text-sm font-semibold text-gray-50">{item.title}</p>
               </Button>
             ))}
           </div>
         </div>
-        <div className="h-88vh border rounded-r-lg border-stone-700 flex w-1/2 flex-col p-2">
+        <div className="h-88vh border rounded-r-sm border-stone-800 flex w-1/2 flex-col p-3">
           {/* Your right column content here */}
           <div className="h-[86%] overflow-x-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow>
+            <Table >
+              <TableHeader className="border border-stone-800 bg-stone-700">
+                <TableRow className="border-stone-800">
                   <TableHead className="text-left">Item</TableHead>
                   <TableHead className="w-[100px] text-left">Price</TableHead>
                   <TableHead className="w-[100px] text-center">
@@ -359,13 +359,14 @@ export default function Home() {
               </TableHeader>
               <TableBody ref={bottomEl}>
                 {bills.map((billItem, idx) => (
-                  <TableRow key={idx}>
-                    <TableCell className="p-[0.5] font-medium">
+                  <TableRow key={idx} className="border-stone-800">
+                    <TableCell className="px-1 py-0 font-medium">
                       {billItem.item.title}
                     </TableCell>
-                    <TableCell className="p-1">
+                    <TableCell className="px-1 py-0">
                       <Input
                         type="string"
+                        className="m-1"
                         value={billItem.item.price ? billItem.item.price : "0"}
                         onChange={(e) =>
                           setBill((prev) =>
@@ -385,18 +386,18 @@ export default function Home() {
                       />
                       {/* {billItem.item.price} */}
                     </TableCell>
-                    <TableCell className="whitespace-nowrap flex">
-                      <Button disabled={billItem.quantity == 0} variant="outline" size="icon">
-                        <Minus onClick={() => setBill((prev) =>
-                          prev.map((bill, i) =>
-                            i === idx
-                              ? {
-                                ...bill,
-                                quantity: bill.quantity - 1,
-                              }
-                              : bill,
-                          ),
-                        )} />
+                    <TableCell className="py-0 m-1 whitespace-nowrap flex">
+                      <Button onClick={() => setBill((prev) =>
+                        prev.map((bill, i) =>
+                          i === idx
+                            ? {
+                              ...bill,
+                              quantity: bill.quantity - 1,
+                            }
+                            : bill,
+                        ),
+                      )} disabled={billItem.quantity == 0} variant="outline" size="icon">
+                        <Minus />
                       </Button>
                       <Input
                         type="number"
@@ -417,24 +418,24 @@ export default function Home() {
                           )
                         }
                       />
-                      <Button variant="outline" size="icon">
-                        <Plus onClick={() => setBill((prev) =>
-                          prev.map((bill, i) =>
-                            i === idx
-                              ? {
-                                ...bill,
-                                quantity: bill.quantity + 1,
-                              }
-                              : bill,
-                          ),
-                        )} />
+                      <Button onClick={() => setBill((prev) =>
+                        prev.map((bill, i) =>
+                          i === idx
+                            ? {
+                              ...bill,
+                              quantity: bill.quantity + 1,
+                            }
+                            : bill,
+                        ),
+                      )} variant="outline" size="icon">
+                        <Plus />
                       </Button>
                     </TableCell>
 
-                    <TableCell className="p-1 text-right">
+                    <TableCell className="py-0 px-1 text-right">
                       {Number(billItem.item.price) * billItem.quantity}
                     </TableCell>
-                    <TableCell className="p-1 text-right">
+                    <TableCell className="px-1 py-0 text-right">
                       <Button
                         variant={"outline"}
                         onClick={() =>
@@ -481,7 +482,7 @@ export default function Home() {
                   variant={'outline'}
                   className="rounded-md bg-gray-600 text-xs py-2 text-white hover:bg-gray-800"
                 >
-                  Hold 
+                  Hold
                   (Ctrl+H)
                 </Button>
                 <Drawer>

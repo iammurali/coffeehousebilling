@@ -74,7 +74,7 @@ export function generatePrintContent(billItems: BillItemType[], totalAmount: num
   </head>
   <body>
     <div class="bill">
-    <img src="/coffeehouselogo.jpg" alt="Restaurant Logo" style="display: block; margin: 0 auto; max-width: 70%;" />
+    <img src="./coffeehouselogo.jpg" alt="Restaurant Logo" style="display: block; margin: 0 auto; max-width: 70%;" />
     <div class="restaurant-name">Edaikazhinadu Coffee House</div>
     <div class="center item-separator" style="margin-bottom: 2px;font-size: 14px;"><span>Vilambur, ECR, Phone: 9715019994</span></div>
   
