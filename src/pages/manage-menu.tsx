@@ -10,11 +10,14 @@ import { api } from "~/utils/api";
 
 import { type RouterOutputs } from "~/utils/api";
 import { EditDialog } from "~/components/editdialog";
+import { Input } from "~/components/ui/input";
+import { compareStrings } from "~/utils/helpers";
 
 type MenuItemType = RouterOutputs["menu"]["getAll"][number];
 
 export default function Home() {
   const [filteredData, setFilteredData] = React.useState<MenuItemType[]>([]);
+  const [search, setSearch] =  React.useState<string>('');
   const { isLoading, data, error, refetch } = api.menu.getAll.useQuery();
   const menuMutation = api.menu.deleteMenuItem.useMutation();
 
@@ -47,6 +50,33 @@ export default function Home() {
             <AddMenuForm />
           </div>
           <div className="ml-10 overflow-y-scroll w-3/4">
+          <Input
+              placeholder="Press Space key to Search..."
+              autoFocus
+              className="mb-1 shadow-sm"
+              value={search}
+              onChange={(e) => {
+                const searchText = e.target.value;
+                setSearch(searchText);
+                if (searchText.trim() === "") {
+                  setFilteredData(data);
+                } else {
+                  const sanitizedSearch = searchText
+                    .trim()
+                    .toLowerCase()
+                    .replace(/\s/g, ""); // Remove spaces from search
+                  const filtered = data.filter(
+                    (item) =>
+                      item.title &&
+                      compareStrings(
+                        sanitizedSearch,
+                        item.title.toLowerCase().replace(/\s/g, ""),
+                      ),
+                  );
+                  setFilteredData(filtered);
+                }
+              }}
+            />
             <Table >
               <TableHeader>
                 <TableRow className="border-neutral-500">
