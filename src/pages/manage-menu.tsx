@@ -95,7 +95,7 @@ export default function Home() {
                     <TableCell>  
                     <EditDialog refetch={async (): Promise<void> => { 
                        try {
-                         toast('Please close the popup');
+                        //  toast('Please close the popup');
                          await refetch(); // Assuming refetch is an asynchronous function that returns a Promise
                       } catch (error) {
                         // Handle any errors from the refetch

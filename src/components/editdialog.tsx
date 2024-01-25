@@ -28,13 +28,26 @@ export function EditDialog({refetch, item}: {refetch: ()=> Promise<void>, item: 
     });
     const editMutation = api.menu.editMenuItem.useMutation();
 
-    const refetchData = async () => await refetch();
     const onSubmit = (data: MenuItemType): void => {
         try {
             
             console.log(data)
             // editMenuItem(data); // Call your mutation with the updated data
             // Close dialog or perform additional actions after mutation
+            editMutation.mutate({
+              id: data.id, 
+              title: data.title ? data.title: '', 
+              price: data.price ? data.price: '',
+              description: data.description? data.description: '',
+            }, {
+              onSuccess: () => {
+                toast('Menu item edited successfully')
+                refetch().then(()=>{
+                  console.log('fetched')
+                  setOpen(false)
+                }).catch((err)=> console.log(err))
+              }
+            })
             
         } catch (error) {
             console.error(error)
