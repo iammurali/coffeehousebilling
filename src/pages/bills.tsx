@@ -20,6 +20,7 @@ type BillItemType = {
 };
 
 type LocalBillType = {
+  totalAmount: 0;
   billId?: string;
   billItems: BillItemType[];
   total: number;
@@ -27,12 +28,13 @@ type LocalBillType = {
 
 type BillCountType = { item: MenuItemType; count: number | undefined };
 type SalesPerMonthType = { month: string; totalSales: number | undefined };
-
+type SalesPerDay = { date: string, totalSales: number | undefined }
 export default function Bills() {
   const [bills, setBills] = useState<LocalBillType[]>([]);
   const [todaysBills, setTodaysBills] = useState<LocalBillType[]>([]);
   const [mostSoldItems, setMostSoldItems] = useState<BillCountType[]>([]);
   const [salesPerMonth, setSalesPerMonth] = useState<SalesPerMonthType[]>([])
+  const [last5DaysSales, setLast5DaysSales] = useState<SalesPerDay[]>([])
 
   useEffect(() => {
     const localBillsString: string | null = localStorage.getItem("bills");
@@ -104,7 +106,64 @@ export default function Bills() {
     const mostSoldItems = getMostSoldItemsWithCount(bills);
     console.log(mostSoldItems, "most sold items");
     setMostSoldItems(mostSoldItems);
+    getLast5DaysSales()
   };
+
+  const getLast5DaysSales = () => {
+    const today = new Date();
+    const last5Days = Array.from({ length: 5 }, (_, index) => {
+      const day = new Date(today);
+      day.setDate(today.getDate() - index);
+      return day.toDateString();
+    });
+  
+    console.log("last 5 days", last5Days);
+  
+    const salesData = last5Days.map((day) => {
+      const filteredBills = bills.filter((singleBill: LocalBillType) => {
+        return day === new Date(Number(singleBill.billId)).toDateString();
+      });
+
+      console.log(filteredBills, 'filtered bills')
+  
+      const totalSales = filteredBills.reduce(
+        (sum, bill) => sum + bill.total,
+        0
+      );
+  
+      return { date: day, totalSales: totalSales };
+    });
+  
+    console.log("last 5 days sales data", salesData);
+  
+    setLast5DaysSales(salesData);
+  };
+
+  // const getLast5DaysItemSellingCount = () => {
+  //   const today = new Date();
+  //   const last5Days = Array.from({ length: 5 }, (_, index) => {
+  //     const day = new Date(today);
+  //     day.setDate(today.getDate() - index);
+  //     return day.toDateString();
+  //   });
+  
+  //   console.log("last 5 days", last5Days);
+  
+  //   const itemSellingCountData = last5Days.map((day) => {
+  //     const filteredBills = bills.filter((singleBill: LocalBillType) => {
+  //       return day === new Date(Number(singleBill.billId)).toDateString();
+  //     });
+  
+  //     const itemSellingCount = filteredBills.reduce((countMap, bill) => {
+  //       bill.items.forEach((item) => {
+  //         const itemId = item.itemId;
+  //         countMap[itemId] = (countMap[itemId] || 0) + 1;
+  //       });
+  //       return countMap;
+  //     }, {});
+  
+  //     return { date: day, itemSellingCount };
+  //   });
 
   const getSalesPerMonthThisYear = (): SalesPerMonthType[] => {
     // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
@@ -159,25 +218,6 @@ export default function Bills() {
               <TableHead className="text-right">Amount</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {todaysBills ? (
-              todaysBills.map((singlebill: LocalBillType, idx: number) => (
-                <TableRow key={singlebill.billId}>
-                  <TableCell className="font-medium">{idx + 1}</TableCell>
-                  <TableCell className="font-medium">
-                    {getDateTime(singlebill.billId)}
-                  </TableCell>
-                  <TableCell>{singlebill.billItems.length}</TableCell>
-                  <TableCell>{ }</TableCell>
-                  <TableCell className="text-right">
-                    {singlebill.total}
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <span></span>
-            )}
-          </TableBody>
           <TableFooter>
             <TableRow>
               <TableCell colSpan={4}>Total Sales Today</TableCell>
@@ -192,6 +232,40 @@ export default function Bills() {
           </TableFooter>
         </Table>
         {/* table for sales count */}
+        {/* Table for last 5 days sales count */}
+        <div className="space-y-2 mt-4">
+          <h4 className="text-sm font-medium leading-none">Todays sales</h4>
+          <p className="text-sm text-muted-foreground">
+            this shows the todays sales with bill value and overall total today
+          </p>
+        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">S.no</TableHead>
+              <TableHead className="">Bill date</TableHead>
+              <TableHead className="text-right">Amount</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {last5DaysSales ? (
+              last5DaysSales.map((singlebill: SalesPerDay, idx: number) => (
+                <TableRow key={singlebill.date}>
+                  <TableCell className="font-medium">{idx + 1}</TableCell>
+                  <TableCell className="font-medium">
+                    {singlebill.date}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {singlebill.totalSales}
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <span></span>
+            )}
+          </TableBody>
+        </Table>
+        {/* Table for last 5 days sales count */}
         <div className="space-y-2 mt-4">
           <h4 className="text-sm font-medium leading-none">Overall sales count</h4>
           <p className="text-sm text-muted-foreground">
