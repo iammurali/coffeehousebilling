@@ -234,9 +234,9 @@ export default function Bills() {
         {/* table for sales count */}
         {/* Table for last 5 days sales count */}
         <div className="space-y-2 mt-4">
-          <h4 className="text-sm font-medium leading-none">Todays sales</h4>
+          <h4 className="text-sm font-medium leading-none">Last 5 days sales</h4>
           <p className="text-sm text-muted-foreground">
-            this shows the todays sales with bill value and overall total today
+            this shows the last 5days sales with total for each day
           </p>
         </div>
         <Table>
