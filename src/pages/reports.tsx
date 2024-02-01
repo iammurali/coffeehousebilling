@@ -171,7 +171,7 @@ export default function Reports() {
       // Iterate through filtered bills to calculate counts and total amounts
       filteredBills.forEach((bill) => {
         bill.billItems.forEach((billItem) => {
-          const itemId: string = billItem.item.title;
+          const itemId: string = billItem.item.title ?? 'misc';
           const quantitySold: number = billItem.quantity;
           const totalAmount: number = quantitySold * parseFloat(billItem.item.price ?? '0');
   
