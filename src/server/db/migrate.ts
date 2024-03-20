@@ -15,7 +15,7 @@ async function migrateFiles() {
     
     const db = drizzle(connection, {
       schema,
-      mode: 'planetscale',
+      mode: 'default',
     });
     // This will run migrations on the database, skipping the ones already applied
     await migrate(db, { migrationsFolder: './migrations' });
