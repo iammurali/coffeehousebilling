@@ -28,7 +28,7 @@ export const users = mysqlTable(
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updatedAt").onUpdateNow(),
+    updatedAt: timestamp("updatedAt").default(sql`CURRENT_TIMESTAMP`),
   },
   (example) => ({
     nameIndex: uniqueIndex("name_idx").on(example.name),
@@ -47,10 +47,9 @@ export const menuItem = mysqlTable(
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updatedAt").onUpdateNow(),
+    updatedAt: timestamp("updatedAt").default(sql`CURRENT_TIMESTAMP`),
   },
   (example) => ({
-    titleIndex: uniqueIndex("title_idx").on(example.title),
   })
 );
 

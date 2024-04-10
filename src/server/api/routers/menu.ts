@@ -1,8 +1,9 @@
 import { eq } from "drizzle-orm";
-import { z } from "zod";
+import { undefined, z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { menuItem } from "~/server/db/schema";
+import { MenuItemType } from "~/utils/common-types";
 import { formSchema, deleteMenuItem, editMenuItemSchema } from "~/utils/zodschema";
 
 export const menuRouter = createTRPCRouter({
@@ -13,8 +14,13 @@ export const menuRouter = createTRPCRouter({
         greeting: `Hello ${input.text}`,
       };
     }),
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.db.select().from(menuItem).where(eq(menuItem.isActive, "true"));
+  getAll: publicProcedure.query(({ ctx })=> {
+    try{
+      console.log("trying to fetch db");
+      return ctx.db.select().from(menuItem).where(eq(menuItem.isActive, "true"));
+    } catch (err) {
+      console.log(err, 'errror::::::')
+    }
   }),
   addMenu: publicProcedure.input(formSchema).mutation(async ({ input, ctx }) => {
     console.log(input)
