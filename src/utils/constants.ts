@@ -16,7 +16,7 @@ export function generatePrintContent(billItems: BillItemType[], totalAmount: num
         font-weight: 600;
         -webkit-font-smoothing: none; /* Disable font smoothing */
         font-smoothing: none;
-        width: 72mm; /* Set width to 72mm */
+        width: 80mm; /* Set width to 72mm */
       }
       @media print {
         body {
